@@ -254,9 +254,9 @@ export function IdCardGenerator() {
         </div>
       )}
 
-      <header className="border-b-2 border-foreground px-5 py-4 md:px-12">
+      <header className="relative z-20 border-b-2 border-foreground px-5 py-4 md:px-12">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <a href="#top" className="font-mono text-xs font-bold tracking-tight sm:text-sm">HH GOA / 2026</a>
+          <a href="https://hhgoa.com/" target="_blank" rel="noopener noreferrer" className="font-mono text-xs font-bold tracking-tight sm:text-sm">HH GOA / 2026</a>
           <nav className="hidden gap-6 md:flex">
           <a href="#about" className="group relative font-mono text-sm font-bold uppercase no-pencil">
             About
