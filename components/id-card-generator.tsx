@@ -5,6 +5,7 @@ import { Download, ImagePlus, Share2, Upload, X } from 'lucide-react'
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import Cropper, { type Area } from 'react-easy-crop'
+import { toPng } from 'html-to-image'
 
 const getHeic2Any = async () => {
   const heic2any = (await import('heic2any')).default
