@@ -58,7 +58,7 @@ export async function GET(request: Request) {
             style={{
               position: 'absolute',
               top: '123px', left: '82px',
-              width: '860px', height: '860px',
+              width: '860px', height: '900px',
               display: 'flex',
             }}
           >
@@ -86,8 +86,8 @@ export async function GET(request: Request) {
             src={`${baseUrl}/stamp.png`} 
             style={{ 
               position: 'absolute',
-              top: '53px', right: '51px',
-              width: '184px', height: '184px',
+              top: '30px', right: '30px',
+              width: '240px', height: '240px',
               opacity: 0.9,
             }} 
           />
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
           {/* Name & Class Badge */}
           <div style={{
             position: 'absolute',
-            top: '1205px',
+            top: '1175px',
             left: '82px',
             right: '82px',
             display: 'flex',
@@ -133,7 +133,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1295px',
+              top: '1255px',
               left: '82px',
               fontSize: '36px',
               fontWeight: 700,
@@ -146,7 +146,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1450px',
+              top: '1350px',
               left: '82px',
               width: '860px',
               height: '4px',
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1470px',
+              top: '1370px',
               left: '82px',
               fontSize: '28px',
               fontWeight: 700,
@@ -169,7 +169,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1470px',
+              top: '1370px',
               right: '92px',
               fontSize: '28px',
               fontWeight: 700,
