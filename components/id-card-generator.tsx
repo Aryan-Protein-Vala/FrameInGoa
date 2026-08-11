@@ -596,47 +596,58 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // 3. Draw Text (Top Layer)
   const offsetY = isMobile ? -6 : 0; // 6px on 1024 canvas = 1.5-2px on UI scale
 
+  const rawName = data.name || 'YOUR NAME';
+  const displayName = rawName.length > 15 ? `${rawName.slice(0, 15)}...` : rawName;
+  const nameFontSize = rawName.length > 12 ? 42 : 54;
+
+  const rawRole = data.className || 'BUILDER CLASS';
+  const displayRole = rawRole.length > 14 ? `${rawRole.slice(0, 14)}...` : rawRole;
+  const roleFontSize = rawRole.length > 12 ? 22 : 28;
+
+  const rawStack = data.stack || 'YOUR STACK';
+  const displayStack = rawStack.length > 22 ? `${rawStack.slice(0, 22)}...` : rawStack;
+  const stackFontSize = rawStack.length > 16 ? 28 : 36;
+
   context.fillStyle = '#101010'; 
   context.textBaseline = 'top';
 
   // Name (DOM: font-mono text-[20px] font-black)
-  context.font = '900 58px "Victor Mono", monospace'; 
+  context.font = `900 ${nameFontSize}px "Victor Mono", monospace`; 
   context.textAlign = 'left';
-  context.fillText(data.name || 'YOUR NAME', 82, 1216 + offsetY); 
+  context.fillText(displayName, 82, 1212 + offsetY); 
   
   // Class badge on the right (slightly bigger font & padding)
-  context.font = '900 31px "Victor Mono", monospace';
-  const badgeText = data.className || 'BUILDER CLASS';
-  const textWidth = context.measureText(badgeText).width;
-  const paddingX = 26;
-  const paddingY = 12;
+  context.font = `900 ${roleFontSize}px "Victor Mono", monospace`;
+  const textWidth = context.measureText(displayRole).width;
+  const paddingX = 20;
+  const paddingY = 10;
   const badgeWidth = textWidth + paddingX * 2;
-  const badgeHeight = 31 + paddingY * 2;
+  const badgeHeight = roleFontSize + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1216 + offsetY; 
+  const badgeY = 1212 + offsetY; 
   
   // Shadow
   context.fillStyle = '#101010';
-  context.fillRect(badgeX + 6, badgeY + 6, badgeWidth, badgeHeight);
+  context.fillRect(badgeX + 5, badgeY + 5, badgeWidth, badgeHeight);
 
   // Background
   context.fillStyle = '#ebd90b';
   context.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
 
   // Border
-  context.lineWidth = 6;
+  context.lineWidth = 5;
   context.strokeStyle = '#101010';
   context.strokeRect(badgeX, badgeY, badgeWidth, badgeHeight);
 
   // Badge Text
   context.fillStyle = '#101010';
   context.textBaseline = 'top';
-  context.fillText(badgeText, badgeX + paddingX, badgeY + paddingY);
+  context.fillText(displayRole, badgeX + paddingX, badgeY + paddingY);
 
   // Stack (DOM: bottom-[13%], font-mono text-[12px] font-bold)
   context.textAlign = 'left';
-  context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1294 + offsetY); 
+  context.font = `700 ${stackFontSize}px "Victor Mono", monospace`; 
+  context.fillText(displayStack, 82, 1288 + offsetY); 
 
   // Footer separator line
   context.lineWidth = 6;

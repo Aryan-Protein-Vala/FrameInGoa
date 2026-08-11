@@ -106,6 +106,19 @@ export async function GET(request: Request) {
       ];
     }
 
+    // Truncate and scale long strings for clean 1-line rendering
+    const rawName = data.name || 'YOUR NAME';
+    const displayName = rawName.length > 15 ? `${rawName.slice(0, 15)}...` : rawName;
+    const nameFontSize = rawName.length > 12 ? '42px' : '54px';
+
+    const rawRole = data.role || 'BUILDER CLASS';
+    const displayRole = rawRole.length > 14 ? `${rawRole.slice(0, 14)}...` : rawRole;
+    const roleFontSize = rawRole.length > 12 ? '22px' : '28px';
+
+    const rawStack = data.stack || 'YOUR STACK';
+    const displayStack = rawStack.length > 22 ? `${rawStack.slice(0, 22)}...` : rawStack;
+    const stackFontSize = rawStack.length > 16 ? '28px' : '34px';
+
     return new ImageResponse(
       (
         <div
@@ -180,30 +193,37 @@ export async function GET(request: Request) {
           }}>
             <div
               style={{
-                fontSize: '58px',
+                fontSize: nameFontSize,
                 fontWeight: 900,
                 color: '#101010',
                 lineHeight: 1,
+                whiteSpace: 'nowrap',
+                maxWidth: '520px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
-              {data.name}
+              {displayName}
             </div>
 
             <div
               style={{
                 backgroundColor: '#ebd90b',
-                padding: '12px 26px',
+                padding: '10px 20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '31px',
+                fontSize: roleFontSize,
                 fontWeight: 900,
                 color: '#101010',
-                border: '6px solid #101010',
-                boxShadow: '6px 6px 0px #101010',
+                border: '5px solid #101010',
+                boxShadow: '5px 5px 0px #101010',
+                whiteSpace: 'nowrap',
+                maxWidth: '320px',
+                overflow: 'hidden',
               }}
             >
-              {data.role}
+              {displayRole}
             </div>
           </div>
 
@@ -213,12 +233,16 @@ export async function GET(request: Request) {
               position: 'absolute',
               top: '1288px',
               left: '82px',
-              fontSize: '36px',
+              maxWidth: '860px',
+              fontSize: stackFontSize,
               fontWeight: 700,
               color: '#101010',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
-            {data.stack}
+            {displayStack}
           </div>
           
           <div
