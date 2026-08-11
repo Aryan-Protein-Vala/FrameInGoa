@@ -154,7 +154,17 @@ export function IdCardGenerator() {
   function download() {
     const canvas = canvasRef.current
     if (!canvas) return
-    const link = document.createElement('a'); link.download = 'hh-goa-id-card.png'; link.href = canvas.toDataURL('image/png'); link.click()
+    canvas.toBlob((blob) => {
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.download = 'hh-goa-id-card.png'
+      link.href = url
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    }, 'image/png')
   }
 
   async function share() {
@@ -164,7 +174,7 @@ export function IdCardGenerator() {
     setIsSharing(true)
     try {
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.8))
-      if (!blob) throw new Error('Failed to create blob')
+      if (!blob) throw new Error('Failed to create image blob for sharing')
       
       const formData = new FormData()
       formData.append('image', blob)
@@ -173,16 +183,19 @@ export function IdCardGenerator() {
       formData.append('role', form.className)
       
       const res = await fetch('/api/share', { method: 'POST', body: formData })
-      if (!res.ok) throw new Error('Failed to share')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null)
+        throw new Error(errorData?.error || 'Failed to communicate with share API')
+      }
       
       const { id } = await res.json()
       
       const shareUrl = `${window.location.origin}/share/${id}`
       const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`)
       window.open(`https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`, '_blank', 'noopener,noreferrer')
-    } catch (e) {
+    } catch (e: any) {
       console.error(e)
-      alert("Failed to share card. Please try again.")
+      alert(e.message || "Failed to share card. Please try again.")
     } finally {
       setIsSharing(false)
     }

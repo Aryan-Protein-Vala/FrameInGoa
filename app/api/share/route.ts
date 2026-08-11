@@ -17,6 +17,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN || !process.env.KV_REST_API_URL) {
+      return NextResponse.json({ 
+        error: 'Vercel Blob or KV is not configured! Please link your Vercel project or add the environment variables to .env.local.' 
+      }, { status: 503 });
+    }
+
     // 5MB limit
     if (image.size > 5 * 1024 * 1024) {
       return NextResponse.json({ error: 'Image too large (max 5MB)' }, { status: 413 });
