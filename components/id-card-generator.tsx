@@ -187,38 +187,41 @@ export function IdCardGenerator() {
   }
 
   async function share() {
-    const canvas = canvasRef.current
-    if (!canvas || !photo || !isCanvasReady) return
+    if (!photo) {
+      toast.error("Please upload a photo first!");
+      return;
+    }
     
-    setIsSharing(true)
-    const newWindow = window.open('about:blank', '_blank')
+    setIsSharing(true);
+    const newWindow = window.open('about:blank', '_blank');
     try {
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9))
-      if (!blob) throw new Error('Failed to create image blob for sharing')
+      // Convert cropped user face photo to blob
+      const photoRes = await fetch(photo);
+      const blob = await photoRes.blob();
       
-      const formData = new FormData()
-      formData.append('image', blob)
-      formData.append('name', form.name)
-      formData.append('stack', form.stack)
-      formData.append('role', form.className)
+      const formData = new FormData();
+      formData.append('image', blob);
+      formData.append('name', form.name);
+      formData.append('stack', form.stack);
+      formData.append('role', form.className);
       
-      const res = await fetch('/api/share', { method: 'POST', body: formData })
+      const res = await fetch('/api/share', { method: 'POST', body: formData });
       if (!res.ok) {
-        const errorData = await res.json().catch(() => null)
-        throw new Error(errorData?.error || 'Failed to communicate with share API')
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to communicate with share API');
       }
       
-      const { id } = await res.json()
+      const { id } = await res.json();
       
-      const shareUrl = `${window.location.origin}/share/${id}`
-      const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`)
-      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`
+      const shareUrl = `${window.location.origin}/share/${id}`;
+      const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`);
+      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`;
     } catch (e: any) {
-      if (newWindow) newWindow.close()
-      console.error(e)
-      toast.error(e.message || "Failed to share card. Please try again.")
+      if (newWindow) newWindow.close();
+      console.error(e);
+      toast.error(e.message || "Failed to share card. Please try again.");
     } finally {
-      setIsSharing(false)
+      setIsSharing(false);
     }
   }
 

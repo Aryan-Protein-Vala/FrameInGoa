@@ -69,11 +69,11 @@ export default async function SharePage({ params }: Props) {
         {data.name}&apos;s ID CARD
       </h1>
       
-      <div className="relative w-full max-w-sm md:max-w-md card-paper border-4 border-black bg-[#f4f0df] p-2 shadow-[12px_16px_0_#101010] transform -rotate-1">
+      <div className="relative w-full max-w-sm md:max-w-md transform -rotate-1 shadow-[12px_16px_0_#101010] rounded-2xl overflow-hidden border-4 border-black">
         <img 
           src={imageUrl} 
           alt={`${data.name}'s ID Card`}
-          className="w-full h-auto block border-2 border-black"
+          className="w-full h-auto block"
           suppressHydrationWarning
         />
       </div>
