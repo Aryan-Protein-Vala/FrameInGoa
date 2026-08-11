@@ -46,8 +46,46 @@ export async function GET(request: Request) {
       fontData = await fallbackRes.arrayBuffer();
     }
 
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    const bgUrl = `${baseUrl}/template.png`;
+    const host = process.env.VERCEL_URL || 'localhost:3000';
+    const baseUrl = host.startsWith('http') ? host : `https://${host}`;
+
+    // Convert avatar to base64 Data URI for Satori
+    let avatarDataUrl = data.avatar_url;
+    if (avatarDataUrl && avatarDataUrl.startsWith('http')) {
+      try {
+        const avatarRes = await fetch(avatarDataUrl);
+        if (avatarRes.ok) {
+          const buffer = await avatarRes.arrayBuffer();
+          const base64 = Buffer.from(buffer).toString('base64');
+          const contentType = avatarRes.headers.get('content-type') || 'image/webp';
+          avatarDataUrl = `data:${contentType};base64,${base64}`;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch avatar for OG image:', err);
+      }
+    }
+
+    // Convert template to base64 Data URI
+    let bgDataUrl = `${baseUrl}/template.png`;
+    try {
+      const bgRes = await fetch(bgDataUrl);
+      if (bgRes.ok) {
+        const buffer = await bgRes.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        bgDataUrl = `data:image/png;base64,${base64}`;
+      }
+    } catch (e) {}
+
+    // Convert stamp to base64 Data URI
+    let stampDataUrl = `${baseUrl}/stamp.png`;
+    try {
+      const stampRes = await fetch(stampDataUrl);
+      if (stampRes.ok) {
+        const buffer = await stampRes.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        stampDataUrl = `data:image/png;base64,${base64}`;
+      }
+    } catch (e) {}
 
     return new ImageResponse(
       (
@@ -72,18 +110,22 @@ export async function GET(request: Request) {
               display: 'flex',
             }}
           >
-             <img 
-               src={data.avatar_url} 
-               style={{ 
-                 width: '100%', height: '100%',
-                 objectFit: 'cover', filter: 'grayscale(100%)' 
-               }} 
-             />
+             {avatarDataUrl ? (
+               <img 
+                 src={avatarDataUrl} 
+                 style={{ 
+                   width: '100%', height: '100%',
+                   objectFit: 'cover', filter: 'grayscale(100%)' 
+                 }} 
+               />
+             ) : (
+               <div style={{ width: '100%', height: '100%', backgroundColor: '#ebd90b' }} />
+             )}
           </div>
 
           {/* Tropical Template Overlay */}
           <img 
-            src={bgUrl} 
+            src={bgDataUrl} 
             style={{ 
               position: 'absolute',
               top: 0, left: 0,
@@ -93,7 +135,7 @@ export async function GET(request: Request) {
           
           {/* Stamp Layer */}
           <img 
-            src={`${baseUrl}/stamp.png`} 
+            src={stampDataUrl} 
             style={{ 
               position: 'absolute',
               top: '15px', right: '10px',
