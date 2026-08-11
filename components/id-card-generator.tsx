@@ -220,8 +220,8 @@ export function IdCardGenerator() {
       const { id } = await res.json();
       
       const shareUrl = `${window.location.origin}/share/${id}`;
-      const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`);
-      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`;
+      const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card.\n#FrameInGoa #HHGOA\n\n${shareUrl}`);
+      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?text=${text}`;
     } catch (e: any) {
       if (newWindow) newWindow.close();
       console.error(e);
