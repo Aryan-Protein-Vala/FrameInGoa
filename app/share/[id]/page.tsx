@@ -64,12 +64,12 @@ export default async function SharePage({ params }: Props) {
   const imageUrl = `/api/og?id=${id}`;
 
   return (
-    <main className="paper-ui min-h-screen bg-[#0B6839] text-[#f4f0df] flex flex-col items-center py-20 px-5 font-mono" suppressHydrationWarning>
-      <h1 className="text-3xl md:text-5xl font-black mb-12 text-center text-[#E5F500] font-[family-name:var(--font-imbue)] uppercase">
+    <main className="paper-ui min-h-screen h-screen max-h-screen bg-[#0B6839] text-[#f4f0df] flex flex-col items-center justify-between py-6 px-4 font-mono overflow-hidden" suppressHydrationWarning>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-center text-[#E5F500] font-[family-name:var(--font-imbue)] uppercase tracking-wide">
         {data.name}&apos;s ID CARD
       </h1>
       
-      <div className="relative w-full max-w-sm md:max-w-md transform -rotate-1 shadow-[12px_16px_0_#101010] rounded-2xl overflow-hidden border-4 border-black">
+      <div className="relative w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] transform -rotate-1 shadow-[10px_14px_0_#101010] rounded-2xl overflow-hidden border-4 border-black my-auto">
         <img 
           src={imageUrl} 
           alt={`${data.name}'s ID Card`}
@@ -78,11 +78,11 @@ export default async function SharePage({ params }: Props) {
         />
       </div>
 
-      <div className="mt-20 w-full max-w-md text-center">
-        <p className="mb-6 text-sm font-bold opacity-80 uppercase tracking-widest text-[#E5F500]">Join the Build Station</p>
+      <div className="w-full max-w-sm text-center">
+        <p className="mb-2 text-xs font-bold opacity-80 uppercase tracking-widest text-[#E5F500]">Join the Build Station</p>
         <Link 
           href="/"
-          className="block w-full border-4 border-black bg-[#E5F500] px-6 py-6 text-lg md:text-xl font-black uppercase tracking-[0.1em] text-black shadow-[8px_8px_0_#101010] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#101010]"
+          className="block w-full border-4 border-black bg-[#E5F500] px-5 py-4 text-base md:text-lg font-black uppercase tracking-[0.1em] text-black shadow-[6px_6px_0_#101010] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[3px_3px_0_#101010]"
         >
           GENERATE YOUR HH GOA ID ↗
         </Link>
