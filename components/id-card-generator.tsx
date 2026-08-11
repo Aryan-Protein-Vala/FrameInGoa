@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useCallback, type ChangeEvent, type DragEvent } from 'react'
 import { Download, ImagePlus, Share2, Upload, X } from 'lucide-react'
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion'
-import Cropper, { Area } from 'react-easy-crop'
+import { toast } from 'sonner'
+import Cropper, { type Area } from 'react-easy-crop'
 
 const getHeic2Any = async () => {
   const heic2any = (await import('heic2any')).default
@@ -94,20 +95,19 @@ export function IdCardGenerator() {
 
   async function loadFile(file?: File) {
     if (!file) return
-    let processFile = file
-
-    if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
-      const heic2any = await getHeic2Any()
-      const converted = await heic2any({ blob: file, toType: 'image/jpeg' })
-      processFile = Array.isArray(converted) ? converted[0] : converted
-    }
-
-    const reader = new FileReader()
-    reader.onload = () => {
-      setRawImage(String(reader.result))
+    try {
+      let processFile = file
+      if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
+        const heic2any = await getHeic2Any()
+        const converted = await heic2any({ blob: file, toType: 'image/jpeg' })
+        processFile = Array.isArray(converted) ? converted[0] : converted
+      }
+      setRawImage(URL.createObjectURL(processFile))
       setIsCropping(true)
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to load image. Please try another one.")
     }
-    reader.readAsDataURL(processFile)
   }
 
   const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
@@ -140,7 +140,7 @@ export function IdCardGenerator() {
 
   function generate() {
     if (!photo) {
-      alert("Please upload your photo first!")
+      toast.error("Please upload your photo first!")
       return
     }
 
@@ -200,7 +200,7 @@ export function IdCardGenerator() {
       window.open(`https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`, '_blank', 'noopener,noreferrer')
     } catch (e: any) {
       console.error(e)
-      alert(e.message || "Failed to share card. Please try again.")
+      toast.error(e.message || "Failed to share card. Please try again.")
     } finally {
       setIsSharing(false)
     }
@@ -262,7 +262,37 @@ export function IdCardGenerator() {
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
           <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em]">01 / YOUR DETAILS</p><h2 className="mt-4 font-mono text-4xl font-black leading-none tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LET&apos;S<br />MAKE IT<br /><span className="bg-foreground px-2 text-primary">OFFICIAL.</span></h2><p className="mt-6 max-w-xs font-mono text-xs font-bold leading-5">This card is your pass to the build station. Make it yours.</p></div>
           <div className="grid gap-5">
-            <div onClick={() => fileInput.current?.click()} onDragOver={(e) => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={onDrop} className={`flex min-h-32 cursor-pointer items-center justify-center gap-4 border-2 border-dashed border-foreground bg-background p-6 text-center transition-colors ${dragging ? 'bg-card' : ''}`}><Upload className="size-7" /><div><p className="font-mono text-xs font-black uppercase">Drag & drop your photo here</p><p className="mt-2 font-mono text-[10px] font-bold uppercase opacity-70">or click to browse · JPG, PNG, HEIC</p></div><input ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} /></div>
+            <div 
+              onClick={() => !rawImage && fileInput.current?.click()} 
+              onDragOver={(e) => { e.preventDefault(); setDragging(true) }} 
+              onDragLeave={() => setDragging(false)} 
+              onDrop={onDrop} 
+              className={`flex min-h-32 ${!rawImage ? 'cursor-pointer' : ''} items-center justify-center gap-4 border-2 border-dashed border-foreground bg-background p-6 text-center transition-colors ${dragging ? 'bg-card' : ''}`}
+            >
+              {rawImage ? (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2 text-[#0B6839]">
+                    <ImagePlus className="size-6" />
+                    <p className="font-mono text-xs font-black uppercase">Photo Uploaded</p>
+                  </div>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); fileInput.current?.click(); }}
+                    className="mt-2 border-2 border-foreground bg-primary px-4 py-2 font-mono text-[10px] font-black uppercase shadow-[2px_2px_0_var(--foreground)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_var(--foreground)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                  >
+                    Reupload Photo
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Upload className="size-7" />
+                  <div>
+                    <p className="font-mono text-xs font-black uppercase">Drag & drop your photo here</p>
+                    <p className="mt-2 font-mono text-[10px] font-bold uppercase opacity-70">or click to browse · JPG, PNG, HEIC</p>
+                  </div>
+                </>
+              )}
+              <input ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class<input value={form.className} onChange={(e) => update('className', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
             <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>

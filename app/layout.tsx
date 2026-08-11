@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Victor_Mono, Imbue } from 'next/font/google'
 import { CustomCursor } from '@/components/custom-cursor'
+import { Toaster } from 'sonner'
 import './globals.css'
 
 const victorMono = Victor_Mono({ 
@@ -52,6 +53,7 @@ export default function RootLayout({
       <body className={`${victorMono.variable} ${imbue.variable} font-mono antialiased`}>
         <CustomCursor />
         {children}
+        <Toaster toastOptions={{ className: 'font-mono text-xs font-bold uppercase rounded-none border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]' }} />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
