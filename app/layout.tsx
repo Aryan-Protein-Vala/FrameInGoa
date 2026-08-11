@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Victor_Mono, Imbue } from 'next/font/google'
+import { CustomCursor } from '@/components/custom-cursor'
 import './globals.css'
 
 const victorMono = Victor_Mono({ 
@@ -49,6 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className={`${victorMono.variable} ${imbue.variable} font-mono antialiased`}>
+        <CustomCursor />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

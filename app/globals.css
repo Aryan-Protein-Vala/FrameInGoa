@@ -100,6 +100,11 @@
   html {
     scroll-behavior: smooth;
   }
+  @media (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
+  }
   html,
   body {
     background: #0B6839;
