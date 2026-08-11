@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 export function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 })
   const [cursorType, setCursorType] = useState<'default' | 'pointer' | 'text'>('default')
+  const [cursorColor, setCursorColor] = useState<'yellow' | 'green'>('yellow')
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -35,6 +36,31 @@ export function CustomCursor() {
       } else {
         setCursorType('default')
       }
+
+      // Check background color for contrast
+      let el: HTMLElement | null = target;
+      let isLight = false;
+      
+      while (el) {
+        const style = window.getComputedStyle(el);
+        const bgColor = style.backgroundColor;
+        
+        if (bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+          const match = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+          if (match) {
+            const r = parseInt(match[1], 10);
+            const g = parseInt(match[2], 10);
+            const b = parseInt(match[3], 10);
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            // Yellow and White have high brightness, Dark Green is low.
+            isLight = brightness > 150;
+            break;
+          }
+        }
+        el = el.parentElement;
+      }
+      
+      setCursorColor(isLight ? 'green' : 'yellow');
     }
 
     window.addEventListener('mousemove', updateMousePosition)
@@ -54,6 +80,7 @@ export function CustomCursor() {
 
   const isPointer = cursorType === 'pointer'
   const isText = cursorType === 'text'
+  const isYellow = cursorColor === 'yellow'
 
   return (
     <>
@@ -65,12 +92,14 @@ export function CustomCursor() {
           y: mousePosition.y - (isText ? 10 : 4),
           width: isText ? 2 : 8,
           height: isText ? 20 : 8,
-          opacity: isVisible ? 1 : 0
+          opacity: isVisible ? 1 : 0,
+          backgroundColor: isYellow ? '#E5F500' : '#0B6839'
         }}
         transition={{ type: "tween", duration: 0 }}
       >
-        <div className={`w-full h-full bg-[#E5F500] ${isText ? '' : 'rounded-none shadow-[2px_2px_0_#101010]'}`} />
+        <div className={`w-full h-full ${isText ? '' : 'rounded-none shadow-[2px_2px_0_#101010]'}`} />
       </motion.div>
+
       
       {/* Outer frame */}
       <motion.div
@@ -90,8 +119,12 @@ export function CustomCursor() {
         }}
       >
         <div 
-          className={`border-[3px] border-[#E5F500] w-full h-full transition-all duration-200 shadow-[4px_4px_0_#101010] ${
-            isPointer ? 'bg-[#E5F500]/20 scale-75' : 'bg-transparent'
+          className={`border-[3px] w-full h-full transition-all duration-200 shadow-[4px_4px_0_#101010] ${
+            isYellow ? 'border-[#E5F500]' : 'border-[#0B6839]'
+          } ${
+            isPointer 
+              ? (isYellow ? 'bg-[#E5F500]/20 scale-75' : 'bg-[#0B6839]/20 scale-75') 
+              : 'bg-transparent'
           }`} 
         />
       </motion.div>
