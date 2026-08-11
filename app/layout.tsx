@@ -24,8 +24,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#f4f0df',
+  colorScheme: 'dark',
+  themeColor: '#0B6839',
 }
 
 export default function RootLayout({
@@ -34,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background">
-      <body className={`${victorMono.variable} ${imbue.variable} font-mono antialiased`}>
+    <html lang="en" className="bg-[#0B6839]">
+      <body className={`${victorMono.variable} ${imbue.variable} font-mono antialiased bg-[#0B6839]`}>
         <CustomCursor />
         {children}
         <Toaster toastOptions={{ className: 'font-mono text-xs font-bold uppercase rounded-none border-2 border-foreground shadow-[4px_4px_0_var(--foreground)]' }} />
