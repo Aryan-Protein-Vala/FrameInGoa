@@ -168,17 +168,20 @@ export function IdCardGenerator() {
   function download() {
     const canvas = canvasRef.current
     if (!canvas) return
-    canvas.toBlob((blob) => {
-      if (!blob) return
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.download = 'hh-goa-id-card.png'
-      link.href = url
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-    }, 'image/png')
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    drawIdCard(canvas, form, photo, isMobile).then(() => {
+      canvas.toBlob((blob) => {
+        if (!blob) return
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.download = 'hh-goa-id-card.png'
+        link.href = url
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }, 'image/png')
+    })
   }
 
   async function share() {
@@ -302,9 +305,9 @@ export function IdCardGenerator() {
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
-                <p className="font-mono text-[19px] font-black leading-none uppercase">{form.name}</p>
-                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
+              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between gap-1">
+                <p className="font-mono text-[14px] sm:text-[17px] md:text-[19px] font-black leading-none uppercase truncate">{form.name}</p>
+                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[8px] sm:text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
@@ -406,9 +409,12 @@ export function IdCardGenerator() {
           transition={{ type: "spring", stiffness: 350, damping: 12 }}
         />
 
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between relative z-10">
-          <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br /><span className="text-primary">FEELS OFFICIAL.</span></h2></div>
-          <div className="flex gap-3">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between relative z-10 text-center md:text-left items-center md:items-end">
+          <div className="flex flex-col items-center md:items-start">
+            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p>
+            <h2 className="mt-3 font-mono text-3xl sm:text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br /><span className="text-primary">FEELS OFFICIAL.</span></h2>
+          </div>
+          <div className="flex gap-3 justify-center">
             <button onClick={download} disabled={!isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-primary px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Download className="size-4" /> DOWNLOAD</button>
             <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
@@ -464,9 +470,9 @@ export function IdCardGenerator() {
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
-                <p className="font-mono text-[20px] font-black leading-none uppercase">{form.name}</p>
-                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[10px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
+              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between gap-1">
+                <p className="font-mono text-[14px] sm:text-[18px] md:text-[20px] font-black leading-none uppercase truncate">{form.name}</p>
+                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
@@ -511,7 +517,7 @@ function drawImageCover(
   context.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
 }
 
-export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
+export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null, isMobile: boolean = false) {
   const context = canvas.getContext('2d'); if (!context) return
   
   await document.fonts.ready;
@@ -573,13 +579,15 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   });
   
   // 3. Draw Text (Top Layer)
+  const offsetY = isMobile ? -6 : 0; // 6px on 1024 canvas = 1.5-2px on UI scale
+
   context.fillStyle = '#101010'; 
   context.textBaseline = 'top';
 
   // Name (DOM: font-mono text-[20px] font-black)
   context.font = '900 58px "Victor Mono", monospace'; 
   context.textAlign = 'left';
-  context.fillText(data.name || 'YOUR NAME', 82, 1216); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1216 + offsetY); 
   
   // Class badge on the right (slightly bigger font & padding)
   context.font = '900 31px "Victor Mono", monospace';
@@ -590,7 +598,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   const badgeWidth = textWidth + paddingX * 2;
   const badgeHeight = 31 + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1216; 
+  const badgeY = 1216 + offsetY; 
   
   // Shadow
   context.fillStyle = '#101010';
@@ -613,17 +621,17 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Stack (DOM: bottom-[13%], font-mono text-[12px] font-bold)
   context.textAlign = 'left';
   context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1294); 
+  context.fillText(data.stack || 'YOUR STACK', 82, 1294 + offsetY); 
 
   // Footer separator line
   context.lineWidth = 6;
   context.strokeStyle = '#101010';
   context.beginPath();
-  context.moveTo(82, 1348);
-  context.lineTo(942, 1348);
+  context.moveTo(82, 1348 + offsetY);
+  context.lineTo(942, 1348 + offsetY);
   context.stroke();
 
   // Footer text
   context.font = '700 27px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1357);
+  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1357 + offsetY);
 }

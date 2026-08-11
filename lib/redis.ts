@@ -1,19 +1,23 @@
-import Redis from 'ioredis';
+import { createClient } from 'redis';
 import { kv } from '@vercel/kv';
 
-let redisClient: Redis | null = null;
+type RedisClientType = ReturnType<typeof createClient>;
+let redisClient: RedisClientType | null = null;
 
-function getRedisClient() {
+async function getRedisClient() {
   if (!redisClient && process.env.REDIS_URL) {
     try {
-      redisClient = new Redis(process.env.REDIS_URL, {
-        maxRetriesPerRequest: 3,
-        connectTimeout: 5000,
-        lazyConnect: true,
-      });
+      redisClient = createClient({ url: process.env.REDIS_URL });
+      redisClient.on('error', (err) => console.warn('Redis Client Error:', err));
+      await redisClient.connect();
     } catch (err) {
-      console.warn('Failed to initialize ioredis client:', err);
+      console.warn('Failed to connect node-redis:', err);
+      redisClient = null;
     }
+  } else if (redisClient && !redisClient.isOpen) {
+    try {
+      await redisClient.connect();
+    } catch (e) {}
   }
   return redisClient;
 }
@@ -22,19 +26,16 @@ export async function setCardData(id: string, data: { name: string; stack: strin
   const jsonStr = JSON.stringify(data);
   const ttlSeconds = 7 * 24 * 60 * 60; // 7 days
 
-  // 1. Try REDIS_URL first (ioredis)
+  // 1. Try REDIS_URL first (node-redis as per Vercel documentation)
   if (process.env.REDIS_URL) {
     try {
-      const client = getRedisClient();
-      if (client) {
-        if (client.status === 'wait') {
-          await client.connect();
-        }
-        await client.set(`hh-goa:${id}`, jsonStr, 'EX', ttlSeconds);
+      const client = await getRedisClient();
+      if (client && client.isOpen) {
+        await client.set(`hh-goa:${id}`, jsonStr, { EX: ttlSeconds });
         return;
       }
     } catch (err) {
-      console.warn('ioredis set error:', err);
+      console.warn('node-redis set error:', err);
     }
   }
 
@@ -49,21 +50,18 @@ export async function setCardData(id: string, data: { name: string; stack: strin
 }
 
 export async function getCardData(id: string) {
-  // 1. Try REDIS_URL first (ioredis)
+  // 1. Try REDIS_URL first (node-redis)
   if (process.env.REDIS_URL) {
     try {
-      const client = getRedisClient();
-      if (client) {
-        if (client.status === 'wait') {
-          await client.connect();
-        }
+      const client = await getRedisClient();
+      if (client && client.isOpen) {
         const val = await client.get(`hh-goa:${id}`);
         if (val) {
           return JSON.parse(val) as { name: string; stack: string; role: string; avatar_url: string };
         }
       }
     } catch (err) {
-      console.warn('ioredis get error:', err);
+      console.warn('node-redis get error:', err);
     }
   }
 
