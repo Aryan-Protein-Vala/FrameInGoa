@@ -199,14 +199,13 @@ export function IdCardGenerator() {
     }
     
     setIsSharing(true);
-    const newWindow = window.open('about:blank', '_blank');
     try {
-      // Convert cropped user face photo to blob
+      // 1. Upload user face photo to Vercel Blob
       const photoRes = await fetch(photo);
-      const blob = await photoRes.blob();
+      const photoBlob = await photoRes.blob();
       
       const formData = new FormData();
-      formData.append('image', blob);
+      formData.append('image', photoBlob);
       formData.append('name', form.name);
       formData.append('stack', form.stack);
       formData.append('role', form.className);
@@ -218,12 +217,50 @@ export function IdCardGenerator() {
       }
       
       const { id } = await res.json();
-      
       const shareUrl = `${window.location.origin}/share/${id}`;
-      const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`);
-      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`;
+      const text = `I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`;
+
+      // 2. Generate high-res canvas PNG blob for native file share / clipboard
+      const canvas = canvasRef.current;
+      let cardFile: File | null = null;
+      if (canvas) {
+        await drawIdCard(canvas, form, photo);
+        const cardBlob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+        if (cardBlob) {
+          cardFile = new File([cardBlob], 'hh-goa-id-card.png', { type: 'image/png' });
+        }
+      }
+
+      // 3. Native Web Share API (Mobile iOS / Android native app share with PNG file attached)
+      if (cardFile && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [cardFile] })) {
+        try {
+          await navigator.share({
+            title: 'Hacker House Goa 2026 ID Card',
+            text: `${text}\n${shareUrl}`,
+            files: [cardFile],
+          });
+          toast.success("Card shared successfully!");
+          return;
+        } catch (shareErr: any) {
+          // Fallback if user cancels native share dialog
+          if (shareErr.name === 'AbortError') return;
+        }
+      }
+
+      // 4. Copy PNG image to clipboard for quick Paste (Ctrl+V / Tap Paste) on Twitter
+      if (cardFile && typeof navigator !== 'undefined' && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': cardFile })
+          ]);
+          toast.success("Card image copied to clipboard! Press Paste in Twitter.");
+        } catch (clipErr) {}
+      }
+
+      // 5. Open Twitter Web Intent
+      const tweetText = encodeURIComponent(`${text} ${shareUrl}`);
+      window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank');
     } catch (e: any) {
-      if (newWindow) newWindow.close();
       console.error(e);
       toast.error(e.message || "Failed to share card. Please try again.");
     } finally {
