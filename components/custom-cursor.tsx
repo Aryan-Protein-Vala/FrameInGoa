@@ -10,67 +10,75 @@ export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
+    let frameId: number;
+
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-      setIsVisible(true)
+      // Use requestAnimationFrame to throttle the DOM calculations
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => {
+        setMousePosition({ x: e.clientX, y: e.clientY })
+        setIsVisible(true)
+
+        const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement
+        if (!target) return
+
+        const isInput = target.tagName.toLowerCase() === 'input' || target.tagName.toLowerCase() === 'textarea'
+        const isClickable = 
+          target.tagName.toLowerCase() === 'button' ||
+          target.tagName.toLowerCase() === 'a' ||
+          target.closest('button') ||
+          target.closest('a') ||
+          window.getComputedStyle(target).cursor === 'pointer'
+
+        if (isInput) {
+          setCursorType('text')
+        } else if (isClickable) {
+          setCursorType('pointer')
+        } else {
+          setCursorType('default')
+        }
+
+        // Check background color for contrast
+        let el: HTMLElement | null = target;
+        let isLight = false;
+        
+        while (el) {
+          const style = window.getComputedStyle(el);
+          const bgColor = style.backgroundColor;
+          
+          if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+            const rgbMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            const oklchMatch = bgColor.match(/oklch\(([\d.]+)/);
+            
+            if (rgbMatch) {
+              const r = parseInt(rgbMatch[1], 10);
+              const g = parseInt(rgbMatch[2], 10);
+              const b = parseInt(rgbMatch[3], 10);
+              const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+              isLight = brightness > 150;
+              break;
+            } else if (oklchMatch) {
+              isLight = parseFloat(oklchMatch[1]) > 0.6;
+              break;
+            }
+          }
+          el = el.parentElement;
+        }
+        
+        setCursorColor(isLight ? 'green' : 'yellow');
+      });
     }
     
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      
-      const isInput = target.tagName.toLowerCase() === 'input' || target.tagName.toLowerCase() === 'textarea'
-      const isClickable = 
-        target.tagName.toLowerCase() === 'button' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.closest('button') ||
-        target.closest('a') ||
-        window.getComputedStyle(target).cursor === 'pointer'
-
-      if (isInput) {
-        setCursorType('text')
-      } else if (isClickable) {
-        setCursorType('pointer')
-      } else {
-        setCursorType('default')
-      }
-
-      // Check background color for contrast
-      let el: HTMLElement | null = target;
-      let isLight = false;
-      
-      while (el) {
-        const style = window.getComputedStyle(el);
-        const bgColor = style.backgroundColor;
-        
-        if (bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-          const match = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-          if (match) {
-            const r = parseInt(match[1], 10);
-            const g = parseInt(match[2], 10);
-            const b = parseInt(match[3], 10);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            // Yellow and White have high brightness, Dark Green is low.
-            isLight = brightness > 150;
-            break;
-          }
-        }
-        el = el.parentElement;
-      }
-      
-      setCursorColor(isLight ? 'green' : 'yellow');
-    }
-
     window.addEventListener('mousemove', updateMousePosition)
-    window.addEventListener('mouseover', handleMouseOver)
     document.addEventListener('mouseleave', handleMouseLeave)
     document.addEventListener('mouseenter', handleMouseEnter)
 
     return () => {
+      cancelAnimationFrame(frameId)
       window.removeEventListener('mousemove', updateMousePosition)
-      window.removeEventListener('mouseover', handleMouseOver)
       document.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseenter', handleMouseEnter)
     }
