@@ -18,10 +18,22 @@ export async function GET(request: Request) {
       return new Response('Missing ID', { status: 400 });
     }
 
-    const data = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
+    let data: { name: string; stack: string; role: string; avatar_url: string } | null = null;
+    try {
+      if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+        data = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
+      }
+    } catch (e) {
+      console.warn('KV get warning in OG route:', e);
+    }
 
     if (!data) {
-      return new Response('Not found', { status: 404 });
+      data = {
+        name: 'BUILDER',
+        stack: 'FULLSTACK',
+        role: 'BUILDER CLASS',
+        avatar_url: `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/stamp.png`
+      };
     }
 
     // Try fetching local font, fallback to Google Fonts if it fails (for dev convenience)

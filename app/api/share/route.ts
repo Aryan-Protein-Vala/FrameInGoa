@@ -17,12 +17,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const hasBlob = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID;
-    const hasKV = (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) || process.env.REDIS_URL || process.env.KV_URL;
-
-    if (!hasBlob || !hasKV) {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json({ 
-        error: 'Vercel Blob or KV credentials missing in local environment. Please paste BLOB_READ_WRITE_TOKEN, KV_REST_API_URL, and KV_REST_API_TOKEN into .env.local.' 
+        error: 'BLOB_READ_WRITE_TOKEN is missing in environment variables.' 
       }, { status: 503 });
     }
 
@@ -39,15 +36,21 @@ export async function POST(request: Request) {
       contentType: image.type,
     });
 
-    await kv.set(
-      `hh-goa:${id}`,
-      { name, stack, role, avatar_url: blob.url },
-      { ex: 7 * 24 * 60 * 60 } // 7 days TTL
-    );
+    try {
+      if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+        await kv.set(
+          `hh-goa:${id}`,
+          { name, stack, role, avatar_url: blob.url },
+          { ex: 7 * 24 * 60 * 60 } // 7 days TTL
+        );
+      }
+    } catch (kvErr) {
+      console.warn('KV Storage Warning (ignored for share):', kvErr);
+    }
 
-    return NextResponse.json({ id });
-  } catch (error) {
+    return NextResponse.json({ id, url: blob.url });
+  } catch (error: any) {
     console.error('Error in share route:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Failed to share card' }, { status: 500 });
   }
 }
