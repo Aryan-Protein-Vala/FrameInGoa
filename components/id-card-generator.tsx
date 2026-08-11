@@ -284,7 +284,7 @@ export function IdCardGenerator() {
             <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
             
             {/* Stamp Layer */}
-            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[4%] w-[30%] z-20 pointer-events-none opacity-90" />
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[2.5%] right-[3%] w-[33%] z-20 pointer-events-none opacity-90" />
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
@@ -295,8 +295,8 @@ export function IdCardGenerator() {
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
-                <span>HH GOA / 2026</span><span className="mr-[2px]">#FRAMEINGOA</span>
+              <div className="absolute bottom-[8%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                <span>HH GOA / 2026</span><span className="mr-4">#FRAMEINGOA</span>
               </div>
             </div>
           </div>
@@ -393,7 +393,7 @@ export function IdCardGenerator() {
             <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
             
             {/* Stamp Layer */}
-            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[4%] w-[30%] z-20 pointer-events-none opacity-90" />
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[2.5%] right-[3%] w-[33%] z-20 pointer-events-none opacity-90" />
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
@@ -404,8 +404,8 @@ export function IdCardGenerator() {
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
-                <span>HH GOA / 2026</span><span className="mr-[4px]">#FRAMEINGOA</span>
+              <div className="absolute bottom-[8%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                <span>HH GOA / 2026</span><span className="mr-5">#FRAMEINGOA</span>
               </div>
             </div>
           </motion.div>
@@ -470,7 +470,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     const stamp = new Image();
     stamp.onload = () => {
       context.globalAlpha = 0.9;
-      context.drawImage(stamp, 690, 15, 310, 310);
+      context.drawImage(stamp, 675, 25, 340, 340);
       context.globalAlpha = 1.0;
       resolve(true);
     };
@@ -511,13 +511,13 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Footer separator line
   context.lineWidth = 4;
   context.beginPath();
-  context.moveTo(82, 1370);
-  context.lineTo(942, 1370);
+  context.moveTo(82, 1390);
+  context.lineTo(942, 1390);
   context.stroke();
 
   // Footer text
   context.font = '700 28px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026', 82, 1410);
+  context.fillText('HH GOA / 2026', 82, 1430);
   context.textAlign = 'right';
-  context.fillText('#FRAMEINGOA', 932, 1410); 
+  context.fillText('#FRAMEINGOA', 900, 1430); 
 }
