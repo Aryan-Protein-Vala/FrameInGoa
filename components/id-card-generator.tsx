@@ -168,21 +168,26 @@ export function IdCardGenerator() {
   }
 
   async function download() {
-    if (!cardRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     try {
-      await document.fonts.ready;
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        pixelRatio: 3,
-      });
-      const link = document.createElement('a');
-      link.download = 'hh-goa-id-card.png';
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await drawIdCard(canvas, form, photo);
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          toast.error('Failed to generate PNG image.');
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = 'hh-goa-id-card.png';
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, 'image/png');
     } catch (err) {
-      console.error('Failed to generate PNG screenshot:', err);
+      console.error('Canvas download error:', err);
       toast.error('Failed to download card. Please try again.');
     }
   }
@@ -552,7 +557,8 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
         context.filter = 'none';
         resolve(true);
       }; 
-      image.src = photo 
+      image.onerror = () => resolve(true);
+      image.src = photo; 
     });
   } else {
     context.fillStyle = '#ebd90b';
@@ -566,6 +572,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
       context.drawImage(template, 0, 0, 1024, 1536);
       resolve(true);
     };
+    template.onerror = () => resolve(true);
     template.src = '/template.png';
   });
 
@@ -582,6 +589,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
       context.globalAlpha = 1.0;
       resolve(true);
     };
+    stamp.onerror = () => resolve(true);
     stamp.src = '/stamp.png';
   });
   
