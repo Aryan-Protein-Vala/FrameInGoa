@@ -297,7 +297,14 @@ export function IdCardGenerator() {
             transition={{ type: "spring", stiffness: 350, damping: 12 }}
           />
 
-          <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10">
+          <motion.div 
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10 cursor-pointer"
+          >
             {/* User Photo Base Layer */}
             {photo ? (
               <img src={photo} alt="Uploaded builder" className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] object-cover grayscale z-0" />
@@ -327,7 +334,7 @@ export function IdCardGenerator() {
                 <span>HH GOA / 2026 | #FRAMEINGOA</span>
               </div>
             </div>
-          </div>
+          </motion.div>
           <div className="absolute bottom-3 right-4 rotate-[-8deg] bg-primary px-3 py-2 font-mono text-[10px] font-black uppercase shadow-[4px_4px_0_var(--foreground)] z-30">BUILD. SHIP. REPEAT.</div>
         </div>
       </section>
