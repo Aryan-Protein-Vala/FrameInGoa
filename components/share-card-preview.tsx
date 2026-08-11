@@ -31,7 +31,7 @@ export function ShareCardPreview({ imageUrl, altText }: { imageUrl: string; altT
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] aspect-[2/3] transform -rotate-1.5 shadow-[12px_16px_0_#101010] rounded-2xl overflow-hidden border-4 border-black shrink-0 mx-auto cursor-pointer"
+        className="relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] aspect-[2/3] transform rotate-[4deg] shadow-[12px_16px_0_#101010] rounded-2xl overflow-hidden border-4 border-black shrink-0 mx-auto cursor-pointer"
       >
         <img 
           src={imageUrl} 
