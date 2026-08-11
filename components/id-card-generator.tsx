@@ -139,6 +139,11 @@ export function IdCardGenerator() {
   }, [form, photo])
 
   function generate() {
+    if (!photo) {
+      alert("Please upload your photo first!")
+      return
+    }
+
     setIsFlashing(true)
     setTimeout(() => setIsFlashing(false), 150)
     
@@ -260,7 +265,7 @@ export function IdCardGenerator() {
             <div onClick={() => fileInput.current?.click()} onDragOver={(e) => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={onDrop} className={`flex min-h-32 cursor-pointer items-center justify-center gap-4 border-2 border-dashed border-foreground bg-background p-6 text-center transition-colors ${dragging ? 'bg-card' : ''}`}><Upload className="size-7" /><div><p className="font-mono text-xs font-black uppercase">Drag & drop your photo here</p><p className="mt-2 font-mono text-[10px] font-bold uppercase opacity-70">or click to browse · JPG, PNG, HEIC</p></div><input ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} /></div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class<input value={form.className} onChange={(e) => update('className', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
-            <button onClick={generate} disabled={!photo} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white disabled:cursor-not-allowed">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
+            <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
           </div>
         </div>
       </section>
