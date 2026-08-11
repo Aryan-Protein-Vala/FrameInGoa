@@ -252,10 +252,6 @@ export function IdCardGenerator() {
             Generator
             <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
           </a>
-          <a href="#rules" className="group relative font-mono text-sm font-bold uppercase no-pencil">
-            Rules
-            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
-          </a>
         </nav>
         <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GOA, INDIA · 28–31 OCT</span>
         </div>
