@@ -1,22 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { getCardData as fetchRedisCardData } from '@/lib/redis';
-import fs from 'fs';
-import path from 'path';
 
 export const runtime = 'nodejs';
-
-function getLocalBase64(relativePath: string, mimeType: string): string | null {
-  try {
-    const filePath = path.join(process.cwd(), 'public', relativePath);
-    if (fs.existsSync(filePath)) {
-      const fileBuffer = fs.readFileSync(filePath);
-      return `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
-    }
-  } catch (e) {
-    console.warn(`Failed to read local asset ${relativePath}:`, e);
-  }
-  return null;
-}
 
 export async function GET(request: Request) {
   try {
@@ -43,27 +28,27 @@ export async function GET(request: Request) {
       };
     }
 
-    // Load local font file directly from disk
+    // Determine Absolute Base URL for asset fetching on Vercel Edge
+    const hostHeader = request.headers.get('x-forwarded-host') || request.headers.get('host');
+    const rawHost = hostHeader || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || 'frame-in-goa-weld.vercel.app';
+    const baseUrl = rawHost.includes('localhost') ? `http://${rawHost}` : `https://${rawHost}`;
+
+    // Fetch local font file via absolute URL
     let fontData: ArrayBuffer | null = null;
     try {
-      const fontPath = path.join(process.cwd(), 'public', 'fonts', 'VictorMono-Bold.ttf');
-      if (fs.existsSync(fontPath)) {
-        const buffer = fs.readFileSync(fontPath);
-        fontData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      const fontRes = await fetch(`${baseUrl}/fonts/VictorMono-Bold.ttf`);
+      if (fontRes.ok) {
+        fontData = await fontRes.arrayBuffer();
+      } else {
+        // Fallback to Google Fonts if local fetch fails
+        const gFontRes = await fetch('https://fonts.gstatic.com/s/victormono/v12/qWcqB6Wjgwt7OlTKYAxTzQxj.ttf');
+        if (gFontRes.ok) fontData = await gFontRes.arrayBuffer();
       }
-    } catch (e) {}
-
-    // Fallback to Google Fonts if local font is missing
-    if (!fontData) {
-      try {
-        const fontRes = await fetch('https://fonts.gstatic.com/s/victormono/v12/qWcqB6Wjgwt7OlTKYAxTzQxj.ttf');
-        if (fontRes.ok) {
-          fontData = await fontRes.arrayBuffer();
-        }
-      } catch (e) {}
+    } catch (e) {
+      console.warn('Failed to load font:', e);
     }
 
-    // Convert avatar to base64 Data URI for Satori
+    // Convert avatar to base64 Data URI for Satori (avoid external image cross-origin issues in Satori)
     let avatarDataUrl = data.avatar_url;
     if (avatarDataUrl && avatarDataUrl.startsWith('http')) {
       try {
@@ -83,9 +68,9 @@ export async function GET(request: Request) {
       }
     }
 
-    // Read template and stamp directly from local disk (zero network requests)
-    const bgDataUrl = getLocalBase64('template.png', 'image/png') || '';
-    const stampDataUrl = getLocalBase64('stamp.png', 'image/png') || '';
+    // Load template and stamp via absolute URL for Edge
+    const bgDataUrl = `${baseUrl}/template.png`;
+    const stampDataUrl = `${baseUrl}/stamp.png`;
 
     const options: any = {
       width: 1024,
