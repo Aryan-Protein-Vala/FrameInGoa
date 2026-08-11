@@ -86,8 +86,8 @@ export async function GET(request: Request) {
             src={`${baseUrl}/stamp.png`} 
             style={{ 
               position: 'absolute',
-              top: '30px', right: '30px',
-              width: '240px', height: '240px',
+              top: '15px', right: '25px',
+              width: '310px', height: '310px',
               opacity: 0.9,
             }} 
           />
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
           {/* Name & Class Badge */}
           <div style={{
             position: 'absolute',
-            top: '1175px',
+            top: '1220px',
             left: '82px',
             right: '82px',
             display: 'flex',
@@ -133,7 +133,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1255px',
+              top: '1280px',
               left: '82px',
               fontSize: '36px',
               fontWeight: 700,
@@ -146,7 +146,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1350px',
+              top: '1330px',
               left: '82px',
               width: '860px',
               height: '4px',
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1370px',
+              top: '1360px',
               left: '82px',
               fontSize: '28px',
               fontWeight: 700,
@@ -169,7 +169,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1370px',
+              top: '1360px',
               right: '92px',
               fontSize: '28px',
               fontWeight: 700,

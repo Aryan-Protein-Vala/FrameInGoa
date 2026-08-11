@@ -284,18 +284,18 @@ export function IdCardGenerator() {
             <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
             
             {/* Stamp Layer */}
-            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[3.5%] w-[23%] z-20 pointer-events-none opacity-90" />
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[4%] w-[30%] z-20 pointer-events-none opacity-90" />
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-              <div className="absolute bottom-[18.5%] left-[8%] right-[8%] flex items-center justify-between">
+              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
                 <p className="font-mono text-[22px] font-black leading-none uppercase">{form.name}</p>
                 <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
-              <p className="absolute bottom-[14.5%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
+              <p className="absolute bottom-[13%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[9%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+              <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
                 <span>HH GOA / 2026</span><span className="mr-[2px]">#FRAMEINGOA</span>
               </div>
             </div>
@@ -393,18 +393,18 @@ export function IdCardGenerator() {
             <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
             
             {/* Stamp Layer */}
-            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[3.5%] w-[23%] z-20 pointer-events-none opacity-90" />
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[2%] right-[4%] w-[30%] z-20 pointer-events-none opacity-90" />
             
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-              <div className="absolute bottom-[18.5%] left-[8%] right-[8%] flex items-center justify-between">
+              <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
                 <p className="font-mono text-[24px] font-black leading-none uppercase">{form.name}</p>
                 <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
-              <p className="absolute bottom-[14.5%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
+              <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[9%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+              <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
                 <span>HH GOA / 2026</span><span className="mr-[4px]">#FRAMEINGOA</span>
               </div>
             </div>
@@ -470,7 +470,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     const stamp = new Image();
     stamp.onload = () => {
       context.globalAlpha = 0.9;
-      context.drawImage(stamp, 755, 30, 235, 235);
+      context.drawImage(stamp, 690, 15, 310, 310);
       context.globalAlpha = 1.0;
       resolve(true);
     };
@@ -483,7 +483,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   
   // Name
   context.font = '900 68px "Victor Mono", monospace'; 
-  context.fillText(data.name || 'YOUR NAME', 82, 1240); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1270); 
   
   // Class badge on the right
   context.font = '900 30px "Victor Mono", monospace';
@@ -493,7 +493,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   const badgeWidth = textWidth + paddingX * 2;
   const badgeHeight = paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1185; 
+  const badgeY = 1215; 
   
   context.fillStyle = '#ebd90b';
   context.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
@@ -506,18 +506,18 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Stack
   context.textAlign = 'left';
   context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1300); 
+  context.fillText(data.stack || 'YOUR STACK', 82, 1320); 
 
   // Footer separator line
   context.lineWidth = 4;
   context.beginPath();
-  context.moveTo(82, 1360);
-  context.lineTo(942, 1360);
+  context.moveTo(82, 1370);
+  context.lineTo(942, 1370);
   context.stroke();
 
   // Footer text
   context.font = '700 28px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026', 82, 1400);
+  context.fillText('HH GOA / 2026', 82, 1410);
   context.textAlign = 'right';
-  context.fillText('#FRAMEINGOA', 932, 1400); 
+  context.fillText('#FRAMEINGOA', 932, 1410); 
 }
