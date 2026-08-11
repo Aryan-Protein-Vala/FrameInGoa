@@ -16,26 +16,11 @@ const imbue = Imbue({
 })
 
 export const metadata: Metadata = {
-  title: 'HH Goa ID Card Generator',
-  description: 'Make your Hacker House Goa 2026 ID card. #FrameInGoa',
-  generator: 'v0.app',
+  title: 'Frame in Goa | Hacker House ID Generator',
+  description: 'Generate your official Hacker House Goa 2026 ID Card. Build. Ship. Repeat.',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+    icon: '/icon.svg',
+  }
 }
 
 export const viewport: Viewport = {
