@@ -57,8 +57,8 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '123px', left: '82px',
-              width: '860px', height: '1000px',
+              top: '170px', left: '82px',
+              width: '860px', height: '953px',
               display: 'flex',
             }}
           >
