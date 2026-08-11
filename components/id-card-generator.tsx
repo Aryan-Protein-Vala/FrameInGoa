@@ -96,7 +96,7 @@ export function IdCardGenerator() {
   async function loadFile(file?: File) {
     if (!file) return
     try {
-      let processFile = file
+      let processFile: File | Blob = file
       if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
         const heic2any = await getHeic2Any()
         const converted = await heic2any({ blob: file, toType: 'image/jpeg' })
