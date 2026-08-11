@@ -86,8 +86,8 @@ export async function GET(request: Request) {
             src={`${baseUrl}/stamp.png`} 
             style={{ 
               position: 'absolute',
-              top: '25px', right: '15px',
-              width: '340px', height: '340px',
+              top: '10px', right: '10px',
+              width: '380px', height: '380px',
               opacity: 0.9,
             }} 
           />
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1430px',
+              top: '1420px',
               left: '82px',
               fontSize: '28px',
               fontWeight: 700,
@@ -169,7 +169,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1430px',
+              top: '1420px',
               right: '124px',
               fontSize: '28px',
               fontWeight: 700,
