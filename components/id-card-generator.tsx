@@ -272,9 +272,9 @@ export function IdCardGenerator() {
           <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground">
             {/* User Photo Base Layer */}
             {photo ? (
-              <img src={photo} alt="Uploaded builder" className="absolute top-[8%] left-[8%] w-[84%] h-[59%] object-cover grayscale z-0" />
+              <img src={photo} alt="Uploaded builder" className="absolute top-[8%] left-[8%] w-[84%] h-[63%] object-cover grayscale z-0" />
             ) : (
-              <div className="absolute top-[8%] left-[8%] w-[84%] h-[59%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
+              <div className="absolute top-[8%] left-[8%] w-[84%] h-[63%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
                 <ImagePlus className="size-10" strokeWidth={1.5} />
                 <span className="text-[10px] font-bold uppercase leading-tight">Your face<br />goes here</span>
               </div>
@@ -295,8 +295,8 @@ export function IdCardGenerator() {
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[8%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-[2px]">
-                <span>HH GOA / 2026</span><span className="mr-4">#FRAMEINGOA</span>
+              <div className="absolute bottom-[9.5%] left-[8%] right-[8%] font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-[2px]">
+                <span>HH GOA / 2026 | #FRAMEINGOA</span>
               </div>
             </div>
           </div>
@@ -382,9 +382,9 @@ export function IdCardGenerator() {
           >
             {/* User Photo Base Layer */}
             {photo ? (
-              <img src={photo} alt="Generated builder card" className="absolute top-[8%] left-[8%] w-[84%] h-[59%] object-cover grayscale z-0" />
+              <img src={photo} alt="Generated builder card" className="absolute top-[8%] left-[8%] w-[84%] h-[63%] object-cover grayscale z-0" />
             ) : (
-              <div className="absolute top-[8%] left-[8%] w-[84%] h-[59%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
+              <div className="absolute top-[8%] left-[8%] w-[84%] h-[63%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
                 Upload a photo above
               </div>
             )}
@@ -404,8 +404,8 @@ export function IdCardGenerator() {
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
               
-              <div className="absolute bottom-[8%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-[2px]">
-                <span>HH GOA / 2026</span><span className="mr-5">#FRAMEINGOA</span>
+              <div className="absolute bottom-[9.5%] left-[8%] right-[8%] font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-[2px]">
+                <span>HH GOA / 2026 | #FRAMEINGOA</span>
               </div>
             </div>
           </motion.div>
@@ -443,8 +443,8 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
         context.filter = 'grayscale(100%)';
-        // photo box: top 8%, left 8%, width 84%, height 59%
-        context.drawImage(image, 82, 123, 860, 906);
+        // photo box: top 8%, left 8%, width 84%, height 63%
+        context.drawImage(image, 82, 123, 860, 960);
         context.filter = 'none';
         resolve(true);
       }; 
@@ -452,7 +452,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     });
   } else {
     context.fillStyle = '#ebd90b';
-    context.fillRect(82, 123, 860, 906);
+    context.fillRect(82, 123, 860, 960);
   }
 
   // 2. Draw Tropical Template (Middle Layer)
@@ -511,13 +511,11 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Footer separator line
   context.lineWidth = 4;
   context.beginPath();
-  context.moveTo(82, 1390);
-  context.lineTo(942, 1390);
+  context.moveTo(82, 1365);
+  context.lineTo(942, 1365);
   context.stroke();
 
   // Footer text
   context.font = '700 28px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026', 82, 1420);
-  context.textAlign = 'right';
-  context.fillText('#FRAMEINGOA', 900, 1420); 
+  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1400);
 }

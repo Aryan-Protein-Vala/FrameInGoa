@@ -58,7 +58,7 @@ export async function GET(request: Request) {
             style={{
               position: 'absolute',
               top: '123px', left: '82px',
-              width: '860px', height: '900px',
+              width: '860px', height: '960px',
               display: 'flex',
             }}
           >
@@ -146,7 +146,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1390px',
+              top: '1370px',
               left: '82px',
               width: '860px',
               height: '4px',
@@ -157,26 +157,14 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1420px',
+              top: '1410px',
               left: '82px',
               fontSize: '28px',
               fontWeight: 700,
               color: '#101010',
             }}
           >
-            HH GOA / 2026
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              top: '1420px',
-              right: '124px',
-              fontSize: '28px',
-              fontWeight: 700,
-              color: '#101010',
-            }}
-          >
-            #FRAMEINGOA
+            HH GOA / 2026 | #FRAMEINGOA
           </div>
         </div>
       ),
