@@ -28,8 +28,8 @@ export async function generateMetadata(
   const { id } = await params;
   const data = await getCardData(id);
 
-  const host = process.env.VERCEL_URL || 'localhost:3000';
-  const baseUrl = host.startsWith('http') ? host : `https://${host}`;
+  const rawHost = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || 'frame-in-goa-weld.vercel.app';
+  const baseUrl = rawHost.startsWith('http') ? rawHost : `https://${rawHost}`;
   const ogImageUrl = `${baseUrl}/api/og?id=${id}`;
 
   return {
@@ -61,13 +61,10 @@ export async function generateMetadata(
 export default async function SharePage({ params }: Props) {
   const { id } = await params;
   const data = await getCardData(id);
-
-  const host = process.env.VERCEL_URL || 'localhost:3000';
-  const baseUrl = host.startsWith('http') ? host : `https://${host}`;
-  const imageUrl = `${baseUrl}/api/og?id=${id}`;
+  const imageUrl = `/api/og?id=${id}`;
 
   return (
-    <main className="paper-ui min-h-screen bg-[#0B6839] text-[#f4f0df] flex flex-col items-center py-20 px-5 font-mono">
+    <main className="paper-ui min-h-screen bg-[#0B6839] text-[#f4f0df] flex flex-col items-center py-20 px-5 font-mono" suppressHydrationWarning>
       <h1 className="text-3xl md:text-5xl font-black mb-12 text-center text-[#E5F500] font-[family-name:var(--font-imbue)] uppercase">
         {data.name}&apos;s ID CARD
       </h1>
@@ -77,6 +74,7 @@ export default async function SharePage({ params }: Props) {
           src={imageUrl} 
           alt={`${data.name}'s ID Card`}
           className="w-full h-auto block border-2 border-black"
+          suppressHydrationWarning
         />
       </div>
 
