@@ -134,12 +134,12 @@
 }
 
 /* Matte pencil grain: a subtle printed-fiber overlay on every major surface. */
-.paper-ui :is(header, section, footer, .card-paper, button, input, label) {
+.paper-ui, .paper-ui :is(.card-paper, button, input, label) {
   position: relative;
   isolation: isolate;
 }
 
-.paper-ui :is(header, section, footer, .card-paper, button, input, label)::before {
+.paper-ui::before, .paper-ui :is(.card-paper, button, input, label)::before {
   content: "";
   position: absolute;
   inset: 0;
