@@ -232,10 +232,21 @@ export function IdCardGenerator() {
       <header className="border-b-2 border-foreground px-5 py-4 md:px-12">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <a href="#top" className="font-mono text-xs font-bold tracking-tight sm:text-sm">HH GOA / 2026</a>
-          <nav className="hidden items-center gap-7 font-mono text-[11px] font-bold uppercase tracking-[0.18em] sm:flex">
-            <a href="#generator" className="hover:text-primary">ID GENERATOR</a><a href="#about" className="hover:text-primary">ABOUT HH GOA</a>
-          </nav>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GOA, INDIA · 28–31 OCT</span>
+          <nav className="hidden gap-6 md:flex">
+          <a href="#about" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+            About
+            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#generator" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+            Generator
+            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#rules" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+            Rules
+            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        </nav>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GOA, INDIA · 28–31 OCT</span>
         </div>
       </header>
 
@@ -374,17 +385,29 @@ export function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: st
   canvas.width = 720;
   canvas.height = 1020;
   
+  const WARM_YELLOW = '#ebd90b';
+  
   // Background (Card paper - Cream)
   context.fillStyle = '#f4f0df';
   context.fillRect(0, 0, 720, 1020);
   
+  // Pencil stroke around the card (mimics .pencil-card::after)
+  context.save();
+  context.translate(360, 510);
+  context.rotate(-0.35 * Math.PI / 180);
+  context.translate(-360, -510);
+  context.strokeStyle = 'rgba(23, 23, 19, 0.5)';
+  context.lineWidth = 1.5;
+  context.strokeRect(9, 0, 704, 1024);
+  context.restore();
+
   // Outer Border
   context.strokeStyle = '#101010';
   context.lineWidth = 8;
   context.strokeRect(4, 4, 712, 1012);
   
-  // Photo Container (Yellow)
-  context.fillStyle = '#e5f500';
+  // Photo Container (Warm Yellow)
+  context.fillStyle = WARM_YELLOW;
   context.fillRect(24, 24, 672, 832);
   context.lineWidth = 4;
   context.strokeRect(24, 24, 672, 832);
@@ -396,32 +419,48 @@ export function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: st
   context.fillStyle = '#101010'; 
   context.textAlign = 'left';
   
-  // Name
-  context.font = '900 36px "Victor Mono", monospace'; 
-  context.fillText(data.name || 'YOUR NAME', 32, 910); 
+  // Name (Bigger and bolder)
+  context.font = '900 44px "Victor Mono", monospace'; 
+  context.fillText(data.name || 'YOUR NAME', 32, 915); 
   
   // Stack
   context.font = '700 20px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 32, 940); 
+  context.fillText(data.stack || 'YOUR STACK', 32, 942); 
   
   // Builder Class Badge
   context.font = '900 18px "Victor Mono", monospace';
   const badgeText = data.className || 'BUILDER CLASS';
   const badgeWidth = context.measureText(badgeText).width + 24;
-  context.fillStyle = '#e5f500';
+  context.fillStyle = WARM_YELLOW;
   context.fillRect(720 - 32 - badgeWidth, 882, badgeWidth, 32);
   context.fillStyle = '#101010';
   context.textAlign = 'center';
   context.fillText(badgeText, 720 - 32 - badgeWidth / 2, 905);
   
-  // Footer Line
+  // Pencil rule above footer
+  // Top thick line
   context.beginPath();
   context.moveTo(32, 965);
   context.lineTo(688, 965);
-  context.lineWidth = 3;
+  context.lineWidth = 2;
+  context.strokeStyle = '#101010';
   context.stroke();
   
+  // Bottom thin pencil line slightly rotated
+  context.save();
+  context.translate(360, 968);
+  context.rotate(-0.25 * Math.PI / 180);
+  context.translate(-360, -968);
+  context.beginPath();
+  context.moveTo(32, 968);
+  context.lineTo(688, 968);
+  context.lineWidth = 1;
+  context.strokeStyle = 'rgba(23, 23, 19, 0.5)';
+  context.stroke();
+  context.restore();
+  
   // Footer text
+  context.fillStyle = '#101010';
   context.font = '900 16px "Victor Mono", monospace';
   context.textAlign = 'left';
   context.fillText('HH GOA / 2026', 32, 992);

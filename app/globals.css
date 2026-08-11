@@ -172,8 +172,11 @@
   border-color: #171713;
 }
 
-.paper-ui :is(button, input, a, [class*="border"]):not(.no-pencil) {
+.paper-ui :is(button, input, a):not(.no-pencil) {
   border-radius: 2px 4px 3px 2px;
+}
+
+.paper-ui :is(button, input):not(.no-pencil) {
   outline: 1px solid rgba(23, 23, 19, 0.22);
   outline-offset: 1px;
 }
