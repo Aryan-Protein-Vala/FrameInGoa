@@ -38,30 +38,32 @@ export function CustomCursor() {
           setCursorType('default')
         }
 
-        // Check background color for contrast
+        // Check background color using semantic classes
         let el: HTMLElement | null = target;
-        let isLight = false;
+        let isLight = false; // body defaults to dark green
         
-        while (el) {
-          const style = window.getComputedStyle(el);
-          const bgColor = style.backgroundColor;
+        while (el && el.tagName !== 'HTML') {
+          const classes = Array.from(el.classList);
           
-          if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-            const rgbMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            const oklchMatch = bgColor.match(/oklch\(([\d.]+)/);
-            
-            if (rgbMatch) {
-              const r = parseInt(rgbMatch[1], 10);
-              const g = parseInt(rgbMatch[2], 10);
-              const b = parseInt(rgbMatch[3], 10);
-              const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-              isLight = brightness > 150;
-              break;
-            } else if (oklchMatch) {
-              isLight = parseFloat(oklchMatch[1]) > 0.6;
-              break;
-            }
+          const hasDarkBg = classes.some(c => c === 'bg-foreground' || c === 'bg-black' || c.startsWith('bg-[#0B'));
+          if (hasDarkBg) {
+            isLight = false;
+            break;
           }
+
+          const hasLightBg = classes.some(c => 
+            c === 'bg-primary' || 
+            c === 'bg-background' || 
+            c === 'bg-card' || 
+            c === 'bg-muted' || 
+            c === 'bg-white'
+          );
+          
+          if (hasLightBg) {
+            isLight = true;
+            break;
+          }
+          
           el = el.parentElement;
         }
         

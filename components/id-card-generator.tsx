@@ -273,7 +273,7 @@ export function IdCardGenerator() {
             <button onClick={share} disabled={isSharing} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
         </div>
-        <div className="mt-10 grid place-items-center border-2 border-dashed border-foreground bg-muted p-6 relative overflow-hidden">
+        <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
           
           <AnimatePresence>
             {isFlashing && (
