@@ -1,5 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next';
 import { getCardData as fetchRedisCardData } from '@/lib/redis';
+import { ShareCardPreview } from '@/components/share-card-preview';
 import Link from 'next/link';
 
 type Props = {
@@ -67,15 +68,8 @@ export default async function SharePage({ params }: Props) {
     <main className="paper-ui min-h-screen bg-[#0B6839] text-[#f4f0df] flex items-center justify-center py-10 px-5 font-mono overflow-y-auto" suppressHydrationWarning>
       <div className="w-full max-w-5xl flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-16">
         
-        {/* Left Column: ID Card */}
-        <div className="relative w-full max-w-[300px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] aspect-[2/3] transform -rotate-1 shadow-[14px_18px_0_#101010] rounded-2xl overflow-hidden border-4 border-black shrink-0">
-          <img 
-            src={imageUrl} 
-            alt={`${data.name}'s ID Card`}
-            className="w-full h-auto block"
-            suppressHydrationWarning
-          />
-        </div>
+        {/* Left Column: Animated ID Card */}
+        <ShareCardPreview imageUrl={imageUrl} altText={`${data.name}'s ID Card`} />
 
         {/* Right Column: Title, Info & CTA Button */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-md">
