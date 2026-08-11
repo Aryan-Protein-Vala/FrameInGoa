@@ -84,10 +84,9 @@ export function CustomCursor() {
           rotate: isPointer ? 45 : 0,
         }}
         transition={{ 
-          type: "spring", 
-          stiffness: 250, 
-          damping: 20,
-          mass: 0.5
+          x: { type: "tween", duration: 0 },
+          y: { type: "tween", duration: 0 },
+          default: { type: "spring", stiffness: 400, damping: 25, mass: 0.5 }
         }}
       >
         <div 
