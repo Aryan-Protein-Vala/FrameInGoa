@@ -512,7 +512,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Name (DOM: font-mono text-[20px] font-black)
   context.font = '900 58px "Victor Mono", monospace'; 
   context.textAlign = 'left';
-  context.fillText(data.name || 'YOUR NAME', 82, 1222); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1216); 
   
   // Class badge on the right (slightly bigger font & padding)
   context.font = '900 31px "Victor Mono", monospace';
@@ -523,7 +523,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   const badgeWidth = textWidth + paddingX * 2;
   const badgeHeight = 31 + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1222; 
+  const badgeY = 1216; 
   
   // Shadow
   context.fillStyle = '#101010';
@@ -546,17 +546,17 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Stack (DOM: bottom-[13%], font-mono text-[12px] font-bold)
   context.textAlign = 'left';
   context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1300); 
+  context.fillText(data.stack || 'YOUR STACK', 82, 1294); 
 
   // Footer separator line
   context.lineWidth = 6;
   context.strokeStyle = '#101010';
   context.beginPath();
-  context.moveTo(82, 1354);
-  context.lineTo(942, 1354);
+  context.moveTo(82, 1348);
+  context.lineTo(942, 1348);
   context.stroke();
 
   // Footer text
   context.font = '700 27px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1363);
+  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1357);
 }
