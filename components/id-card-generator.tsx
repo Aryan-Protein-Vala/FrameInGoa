@@ -74,6 +74,7 @@ export function IdCardGenerator() {
 
   const fileInput = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const x = useMotionValue(0.5)
   const y = useMotionValue(0.5)
@@ -165,23 +166,24 @@ export function IdCardGenerator() {
     }, 100)
   }
 
-  function download() {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    drawIdCard(canvas, form, photo, isMobile).then(() => {
-      canvas.toBlob((blob) => {
-        if (!blob) return
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.download = 'hh-goa-id-card.png'
-        link.href = url
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url)
-      }, 'image/png')
-    })
+  async function download() {
+    if (!cardRef.current) return;
+    try {
+      await document.fonts.ready;
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 3,
+      });
+      const link = document.createElement('a');
+      link.download = 'hh-goa-id-card.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Failed to generate PNG screenshot:', err);
+      toast.error('Failed to download card. Please try again.');
+    }
   }
 
   async function share() {
@@ -444,6 +446,7 @@ export function IdCardGenerator() {
           <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
           
           <motion.div 
+            ref={cardRef}
             initial={false}
             animate={{
               filter: isDeveloping 
