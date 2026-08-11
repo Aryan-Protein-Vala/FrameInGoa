@@ -269,39 +269,37 @@ export function IdCardGenerator() {
           <a href="#generator" className="mt-8 w-fit border-2 border-foreground bg-primary px-6 py-3 font-mono text-xs font-black uppercase tracking-widest shadow-[5px_5px_0_var(--foreground)] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_var(--foreground)]">START GENERATING ↘</a>
         </div>
         <div className="relative flex min-h-[330px] items-center justify-center md:min-h-[440px]">
-          <motion.div 
-            animate={{ y: [-8, 8, -8] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          >
-            <div className="relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl">
-              {/* User Photo Base Layer */}
-              {photo ? (
-                <img src={photo} alt="Uploaded builder" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
-              ) : (
-                <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
-                  <ImagePlus className="size-10" strokeWidth={1.5} />
-                  <span className="text-[10px] font-bold uppercase leading-tight">Your face<br />goes here</span>
-                </div>
-              )}
+          <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground">
+            {/* User Photo Base Layer */}
+            {photo ? (
+              <img src={photo} alt="Uploaded builder" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
+            ) : (
+              <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
+                <ImagePlus className="size-10" strokeWidth={1.5} />
+                <span className="text-[10px] font-bold uppercase leading-tight">Your face<br />goes here</span>
+              </div>
+            )}
+            
+            {/* Tropical Template Overlay */}
+            <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
+            
+            {/* Stamp Layer */}
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[3.5%] right-[5%] w-[18%] z-20 pointer-events-none opacity-90" />
+            
+            {/* Text Overlay */}
+            <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
+              <div className="absolute bottom-[17%] left-[8%] right-[8%] flex items-center justify-between">
+                <p className="font-mono text-[22px] font-black leading-none uppercase">{form.name}</p>
+                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
+              </div>
               
-              {/* Tropical Template Overlay */}
-              <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
+              <p className="absolute bottom-[13%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
               
-              {/* Text Overlay */}
-              <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-                <div className="absolute bottom-[23%] left-[8%] right-[8%] flex items-center justify-between">
-                  <p className="font-mono text-[22px] font-black leading-none uppercase">{form.name}</p>
-                  <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
-                </div>
-                
-                <p className="absolute bottom-[19%] left-[8%] font-mono text-[11px] font-bold uppercase">{form.stack}</p>
-                
-                <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
-                  <span>HH GOA / 2026</span><span>NO. 0001</span>
-                </div>
+              <div className="absolute bottom-[4%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                <span>HH GOA / 2026</span><span className="mr-[2px]">#FRAMEINGOA</span>
               </div>
             </div>
-          </motion.div>
+          </div>
           <div className="absolute bottom-3 right-4 rotate-[-8deg] bg-primary px-3 py-2 font-mono text-[10px] font-black uppercase shadow-[4px_4px_0_var(--foreground)] z-30">BUILD. SHIP. REPEAT.</div>
         </div>
       </section>
@@ -373,48 +371,43 @@ export function IdCardGenerator() {
           <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
           
           <motion.div 
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            whileHover={{ scale: 1.02 }}
-            style={{ rotateX, rotateY, perspective: 1000 }}
-            className="relative z-0"
+            initial={false}
+            animate={{
+              filter: isDeveloping 
+                ? 'brightness(0) contrast(2)' 
+                : 'brightness(1) contrast(1)'
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="card-paper pencil-card relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground"
           >
-            <motion.div 
-              initial={false}
-              animate={{
-                filter: isDeveloping 
-                  ? 'brightness(0) contrast(2)' 
-                  : 'brightness(1) contrast(1)'
-              }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl"
-            >
-              {/* User Photo Base Layer */}
-              {photo ? (
-                <img src={photo} alt="Generated builder card" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
-              ) : (
-                <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
-                  Upload a photo above
-                </div>
-              )}
-              
-              {/* Tropical Template Overlay */}
-              <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
-              
-              {/* Text Overlay */}
-              <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
-                <div className="absolute bottom-[23%] left-[8%] right-[8%] flex items-center justify-between">
-                  <p className="font-mono text-[24px] font-black leading-none uppercase">{form.name}</p>
-                  <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
-                </div>
-                
-                <p className="absolute bottom-[19%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
-                
-                <div className="absolute bottom-[10%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
-                  <span>HH GOA / 2026</span><span>#FRAMEINGOA</span>
-                </div>
+            {/* User Photo Base Layer */}
+            {photo ? (
+              <img src={photo} alt="Generated builder card" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
+            ) : (
+              <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
+                Upload a photo above
               </div>
-            </motion.div>
+            )}
+            
+            {/* Tropical Template Overlay */}
+            <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
+            
+            {/* Stamp Layer */}
+            <img src="/stamp.png" alt="Stamp" className="absolute top-[3.5%] right-[5%] w-[18%] z-20 pointer-events-none opacity-90" />
+            
+            {/* Text Overlay */}
+            <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
+              <div className="absolute bottom-[17%] left-[8%] right-[8%] flex items-center justify-between">
+                <p className="font-mono text-[24px] font-black leading-none uppercase">{form.name}</p>
+                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
+              </div>
+              
+              <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
+              
+              <div className="absolute bottom-[4%] left-[8%] right-[8%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                <span>HH GOA / 2026</span><span className="mr-[4px]">#FRAMEINGOA</span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -471,6 +464,20 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     };
     template.src = '/template.png';
   });
+
+  // 2.5 Draw Stamp
+  await new Promise((resolve) => {
+    const stamp = new Image();
+    stamp.onload = () => {
+      // top-[3.5%] right-[5%] w-[18%] -> y=53, x=1024-(1024*0.05)-(1024*0.18)=972-184=788, w=184, h=184
+      // aspect ratio of stamp is square probably
+      context.globalAlpha = 0.9;
+      context.drawImage(stamp, 788, 53, 184, 184);
+      context.globalAlpha = 1.0;
+      resolve(true);
+    };
+    stamp.src = '/stamp.png';
+  });
   
   // 3. Draw Text (Top Layer)
   context.fillStyle = '#101010'; 
@@ -478,7 +485,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   
   // Name
   context.font = '900 68px "Victor Mono", monospace'; 
-  context.fillText(data.name || 'YOUR NAME', 82, 1200); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1270); 
   
   // Class badge on the right
   context.font = '900 30px "Victor Mono", monospace';
@@ -488,7 +495,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   const badgeWidth = textWidth + paddingX * 2;
   const badgeHeight = paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1145; // Centered with name
+  const badgeY = 1215; // Centered with name (1270 - 55 = 1215 approx)
   
   context.fillStyle = '#ebd90b';
   context.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
@@ -501,18 +508,18 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   // Stack
   context.textAlign = 'left';
   context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1265); 
+  context.fillText(data.stack || 'YOUR STACK', 82, 1335); 
 
   // Footer separator line
   context.lineWidth = 4;
   context.beginPath();
-  context.moveTo(82, 1370);
-  context.lineTo(942, 1370);
+  context.moveTo(82, 1450);
+  context.lineTo(942, 1450);
   context.stroke();
 
   // Footer text
   context.font = '700 28px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026', 82, 1425);
+  context.fillText('HH GOA / 2026', 82, 1500);
   context.textAlign = 'right';
-  context.fillText('#FRAMEINGOA', 942, 1425);
+  context.fillText('#FRAMEINGOA', 932, 1500); // Shifted slightly left by 10px
 }
