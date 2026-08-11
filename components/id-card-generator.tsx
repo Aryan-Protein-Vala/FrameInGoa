@@ -431,20 +431,20 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.fillStyle = '#f4f0df';
   context.fillRect(0, 0, 1024, 1536);
   
-  // 1. Draw User Photo (Bottom Layer)
-  // Clip rounded corners for canvas overall
+  // 1. Clip rounded corners for canvas overall (48px radius for 1024 width)
   context.beginPath();
-  context.roundRect(0, 0, 1024, 1536, 40); // 40px border radius
+  context.roundRect(0, 0, 1024, 1536, 48);
   context.clip();
 
+  // 1.1 Draw User Photo (Bottom Layer)
+  // DOM: top-[9.5%] left-[8%] w-[84%] h-[64.5%]
   if (photo) { 
     await new Promise((resolve) => {
       const image = new Image(); 
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
         context.filter = 'grayscale(100%)';
-        // photo box: top 9.5%, left 8%, width 84%, height 64.5%
-        context.drawImage(image, 82, 147, 860, 976);
+        context.drawImage(image, 82, 146, 860, 991);
         context.filter = 'none';
         resolve(true);
       }; 
@@ -452,7 +452,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     });
   } else {
     context.fillStyle = '#ebd90b';
-    context.fillRect(82, 147, 860, 976);
+    context.fillRect(82, 146, 860, 991);
   }
 
   // 2. Draw Tropical Template (Middle Layer)
@@ -465,12 +465,16 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     template.src = '/template.png';
   });
 
-  // 2.5 Draw Stamp
+  // 2.5 Draw Stamp (Top Right) - Preserve natural aspect ratio so it doesn't stretch down
   await new Promise((resolve) => {
     const stamp = new Image();
     stamp.onload = () => {
       context.globalAlpha = 0.9;
-      context.drawImage(stamp, 635, 10, 380, 380);
+      const stampWidth = 379;
+      const stampHeight = (stamp.naturalHeight / stamp.naturalWidth) * stampWidth;
+      const stampX = 1024 - 10 - stampWidth; // right-[1%]
+      const stampY = 15; // top-[1%]
+      context.drawImage(stamp, stampX, stampY, stampWidth, stampHeight);
       context.globalAlpha = 1.0;
       resolve(true);
     };
@@ -479,43 +483,56 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   
   // 3. Draw Text (Top Layer)
   context.fillStyle = '#101010'; 
+  context.textBaseline = 'top';
+
+  // Name (DOM: bottom-[16.5%], font-mono text-[24px] font-black)
+  context.font = '900 70px "Victor Mono", monospace'; 
   context.textAlign = 'left';
-  
-  // Name
-  context.font = '900 68px "Victor Mono", monospace'; 
-  context.fillText(data.name || 'YOUR NAME', 82, 1270); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1211); 
   
   // Class badge on the right
-  context.font = '900 30px "Victor Mono", monospace';
-  const textWidth = context.measureText(data.className || 'BUILDER CLASS').width;
+  context.font = '900 27px "Victor Mono", monospace';
+  const badgeText = data.className || 'BUILDER CLASS';
+  const textWidth = context.measureText(badgeText).width;
   const paddingX = 24;
-  const paddingY = 32;
+  const paddingY = 10;
   const badgeWidth = textWidth + paddingX * 2;
-  const badgeHeight = paddingY * 2;
+  const badgeHeight = 27 + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1215; 
+  const badgeY = 1225; 
   
+  // Shadow
+  context.fillStyle = '#101010';
+  context.fillRect(badgeX + 6, badgeY + 6, badgeWidth, badgeHeight);
+
+  // Background
   context.fillStyle = '#ebd90b';
   context.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
-  context.lineWidth = 4;
+
+  // Border
+  context.lineWidth = 6;
   context.strokeStyle = '#101010';
   context.strokeRect(badgeX, badgeY, badgeWidth, badgeHeight);
-  context.fillStyle = '#101010';
-  context.fillText(data.className || 'BUILDER CLASS', badgeX + paddingX, badgeY + paddingY + 10);
 
-  // Stack
+  // Badge Text
+  context.fillStyle = '#101010';
+  context.textBaseline = 'top';
+  context.fillText(badgeText, badgeX + paddingX, badgeY + paddingY);
+
+  // Stack (DOM: bottom-[13%], font-mono text-[12px] font-bold)
   context.textAlign = 'left';
   context.font = '700 36px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 82, 1320); 
+  context.fillText(data.stack || 'YOUR STACK', 82, 1300); 
 
-  // Footer separator line
-  context.lineWidth = 4;
+  // Footer separator line (DOM: border-t-2 => 6px line on 1024px canvas)
+  context.lineWidth = 6;
+  context.strokeStyle = '#101010';
   context.beginPath();
-  context.moveTo(82, 1365);
-  context.lineTo(942, 1365);
+  context.moveTo(82, 1354);
+  context.lineTo(942, 1354);
   context.stroke();
 
-  // Footer text
-  context.font = '700 28px "Victor Mono", monospace';
-  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1400);
+  // Footer text (DOM: bottom-[9.5%], font-mono text-[9px] font-bold)
+  context.font = '700 27px "Victor Mono", monospace';
+  context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1363);
 }

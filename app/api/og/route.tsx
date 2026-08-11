@@ -49,7 +49,7 @@ export async function GET(request: Request) {
             backgroundColor: '#f4f0df',
             fontFamily: '"Victor Mono"',
             position: 'relative',
-            borderRadius: '40px',
+            borderRadius: '48px',
             overflow: 'hidden',
           }}
         >
@@ -57,8 +57,8 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '147px', left: '82px',
-              width: '860px', height: '976px',
+              top: '146px', left: '82px',
+              width: '860px', height: '991px',
               display: 'flex',
             }}
           >
@@ -86,8 +86,9 @@ export async function GET(request: Request) {
             src={`${baseUrl}/stamp.png`} 
             style={{ 
               position: 'absolute',
-              top: '10px', right: '10px',
-              width: '380px', height: '380px',
+              top: '15px', right: '10px',
+              width: '379px',
+              objectFit: 'contain',
               opacity: 0.9,
             }} 
           />
@@ -95,7 +96,7 @@ export async function GET(request: Request) {
           {/* Name & Class Badge */}
           <div style={{
             position: 'absolute',
-            top: '1220px',
+            top: '1211px',
             left: '82px',
             right: '82px',
             display: 'flex',
@@ -104,9 +105,10 @@ export async function GET(request: Request) {
           }}>
             <div
               style={{
-                fontSize: '68px',
+                fontSize: '70px',
                 fontWeight: 900,
                 color: '#101010',
+                lineHeight: 1,
               }}
             >
               {data.name}
@@ -119,10 +121,11 @@ export async function GET(request: Request) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '30px',
+                fontSize: '27px',
                 fontWeight: 900,
                 color: '#101010',
-                border: '4px solid #101010',
+                border: '6px solid #101010',
+                boxShadow: '6px 6px 0px #101010',
               }}
             >
               {data.role}
@@ -133,7 +136,7 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1280px',
+              top: '1300px',
               left: '82px',
               fontSize: '36px',
               fontWeight: 700,
@@ -146,10 +149,10 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1370px',
+              top: '1354px',
               left: '82px',
               width: '860px',
-              height: '4px',
+              height: '6px',
               backgroundColor: '#101010',
             }}
           />
@@ -157,9 +160,9 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1410px',
+              top: '1363px',
               left: '82px',
-              fontSize: '28px',
+              fontSize: '27px',
               fontWeight: 700,
               color: '#101010',
             }}
