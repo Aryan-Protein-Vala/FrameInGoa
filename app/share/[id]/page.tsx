@@ -7,37 +7,55 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+async function getCardData(id: string) {
+  try {
+    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+      const res = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
+      if (res) return res;
+    }
+  } catch (e) {
+    console.warn('KV read warning on share page:', e);
+  }
+  return {
+    name: 'GOA BUILDER',
+    stack: 'FULLSTACK',
+    role: 'BUILDER CLASS',
+    avatar_url: ''
+  };
+}
+
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
-  const data = await kv.get<{ name: string }>(`hh-goa:${id}`);
+  const data = await getCardData(id);
 
-  if (!data) {
-    return {
-      title: 'Not Found - HH Goa ID Card',
-    };
-  }
-
-  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  const host = process.env.VERCEL_URL || 'localhost:3000';
+  const baseUrl = host.startsWith('http') ? host : `https://${host}`;
   const ogImageUrl = `${baseUrl}/api/og?id=${id}`;
 
   return {
     title: `${data.name}'s Hacker House Goa 2026 ID Card`,
-    description: `Check out my Hacker House Goa 2026 ID card. #FrameInGoa`,
+    description: `Check out my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`,
     openGraph: {
+      title: `${data.name}'s HH Goa ID Card`,
+      description: `Check out my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`,
+      url: `${baseUrl}/share/${id}`,
+      siteName: 'Hacker House Goa 2026',
       images: [
         {
           url: ogImageUrl,
-          width: 720,
-          height: 900,
+          width: 1024,
+          height: 1536,
           alt: `${data.name}'s HH Goa ID Card`,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
+      title: `${data.name}'s HH Goa ID Card`,
+      description: `Check out my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`,
       images: [ogImageUrl],
     },
   };
@@ -45,13 +63,10 @@ export async function generateMetadata(
 
 export default async function SharePage({ params }: Props) {
   const { id } = await params;
-  const data = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
+  const data = await getCardData(id);
 
-  if (!data) {
-    notFound();
-  }
-
-  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  const host = process.env.VERCEL_URL || 'localhost:3000';
+  const baseUrl = host.startsWith('http') ? host : `https://${host}`;
   const imageUrl = `${baseUrl}/api/og?id=${id}`;
 
   return (
