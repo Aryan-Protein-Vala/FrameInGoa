@@ -36,9 +36,6 @@ export async function GET(request: Request) {
       fontData = await fallbackRes.arrayBuffer();
     }
 
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    const bgUrl = `${baseUrl}/base-frame.png`;
-
     return new ImageResponse(
       (
         <div
@@ -46,37 +43,51 @@ export async function GET(request: Request) {
             display: 'flex',
             width: '100%',
             height: '100%',
-            backgroundColor: '#0B6839',
-            backgroundImage: `url(${bgUrl})`,
-            backgroundSize: '100% 100%',
+            backgroundColor: '#f4f0df',
             fontFamily: '"Victor Mono"',
             position: 'relative',
+            border: '8px solid #101010',
           }}
         >
-          {/* Avatar */}
+          {/* Inner Photo Frame */}
           <div
             style={{
               position: 'absolute',
-              top: '72px',
-              left: '72px',
-              width: '576px',
-              height: '570px',
+              top: '24px', left: '24px',
+              width: '672px', height: '832px',
+              backgroundColor: '#ebd90b',
+              border: '4px solid #101010',
               display: 'flex',
             }}
           >
-            <img 
-              src={data.avatar_url} 
-              style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(100%)' }} 
-            />
+             {/* Photo Inner Border */}
+             <div
+               style={{
+                 position: 'absolute',
+                 top: '16px', left: '16px',
+                 width: '640px', height: '800px',
+                 border: '4px solid #101010',
+               }}
+             />
+             
+             <img 
+               src={data.avatar_url} 
+               style={{ 
+                 position: 'absolute',
+                 top: '18px', left: '18px',
+                 width: '636px', height: '796px',
+                 objectFit: 'cover', filter: 'grayscale(100%)' 
+               }} 
+             />
           </div>
 
           {/* Name */}
           <div
             style={{
               position: 'absolute',
-              top: '700px',
-              left: '52px',
-              fontSize: '40px',
+              top: '710px',
+              left: '32px',
+              fontSize: '44px',
               fontWeight: 900,
               color: '#101010',
             }}
@@ -88,9 +99,9 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '760px',
-              left: '52px',
-              fontSize: '22px',
+              top: '765px',
+              left: '32px',
+              fontSize: '20px',
               fontWeight: 700,
               color: '#101010',
             }}
@@ -103,19 +114,30 @@ export async function GET(request: Request) {
             style={{
               position: 'absolute',
               top: '700px',
-              right: '52px',
-              backgroundColor: '#E5F500',
-              padding: '10px 20px',
+              right: '32px',
+              backgroundColor: '#ebd90b',
+              padding: '6px 12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '22px',
+              fontSize: '18px',
               fontWeight: 900,
               color: '#101010',
             }}
           >
             {data.role}
           </div>
+          
+          <div
+            style={{
+              position: 'absolute',
+              top: '805px',
+              left: '32px',
+              width: '656px',
+              height: '3px',
+              backgroundColor: '#101010',
+            }}
+          />
         </div>
       ),
       {

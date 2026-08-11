@@ -56,6 +56,7 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area) {
 export function IdCardGenerator() {
   const [form, setForm] = useState(defaultForm)
   const [photo, setPhoto] = useState<string | null>(null)
+  const [isCanvasReady, setIsCanvasReady] = useState(false)
   
   // Cropper state
   const [rawImage, setRawImage] = useState<string | null>(null)
@@ -102,6 +103,7 @@ export function IdCardGenerator() {
         const converted = await heic2any({ blob: file, toType: 'image/jpeg' })
         processFile = Array.isArray(converted) ? converted[0] : converted
       }
+      if (rawImage) URL.revokeObjectURL(rawImage)
       setRawImage(URL.createObjectURL(processFile))
       setIsCropping(true)
     } catch (e) {
@@ -135,7 +137,14 @@ export function IdCardGenerator() {
   }
 
   useEffect(() => {
-    if (canvasRef.current) drawIdCard(canvasRef.current, form, photo)
+    let active = true;
+    if (canvasRef.current) {
+      setIsCanvasReady(false);
+      drawIdCard(canvasRef.current, form, photo).then(() => {
+        if (active) setIsCanvasReady(true);
+      });
+    }
+    return () => { active = false; };
   }, [form, photo])
 
   function generate() {
@@ -174,11 +183,12 @@ export function IdCardGenerator() {
 
   async function share() {
     const canvas = canvasRef.current
-    if (!canvas || !photo) return
+    if (!canvas || !photo || !isCanvasReady) return
     
     setIsSharing(true)
+    const newWindow = window.open('about:blank', '_blank')
     try {
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.8))
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9))
       if (!blob) throw new Error('Failed to create image blob for sharing')
       
       const formData = new FormData()
@@ -197,8 +207,9 @@ export function IdCardGenerator() {
       
       const shareUrl = `${window.location.origin}/share/${id}`
       const text = encodeURIComponent(`I made my Hacker House Goa 2026 ID card. #FrameInGoa #HHGOA`)
-      window.open(`https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`, '_blank', 'noopener,noreferrer')
+      if (newWindow) newWindow.location.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`
     } catch (e: any) {
+      if (newWindow) newWindow.close()
       console.error(e)
       toast.error(e.message || "Failed to share card. Please try again.")
     } finally {
@@ -216,7 +227,7 @@ export function IdCardGenerator() {
               image={rawImage}
               crop={crop}
               zoom={zoom}
-              aspect={1}
+              aspect={4/5}
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
@@ -302,7 +313,7 @@ export function IdCardGenerator() {
                   </div>
                 </>
               )}
-              <input ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} />
+              <input onClick={(e) => ((e.target as HTMLInputElement).value = '')} ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} />
             </div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class<input value={form.className} onChange={(e) => update('className', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
@@ -315,8 +326,8 @@ export function IdCardGenerator() {
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br />FEELS OFFICIAL.</h2></div>
           <div className="flex gap-3">
-            <button onClick={download} className="flex items-center gap-2 border-2 border-foreground bg-primary px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)]"><Download className="size-4" /> DOWNLOAD</button>
-            <button onClick={share} disabled={isSharing} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
+            <button onClick={download} disabled={!isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-primary px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Download className="size-4" /> DOWNLOAD</button>
+            <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
         </div>
         <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
@@ -379,7 +390,7 @@ export function IdCardGenerator() {
   )
 }
 
-export function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
+export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
   const context = canvas.getContext('2d'); if (!context) return
   
   canvas.width = 720;
@@ -469,13 +480,16 @@ export function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: st
   
   // Draw Photo if exists
   if (photo) { 
-    const image = new Image(); 
-    image.crossOrigin = 'anonymous'; 
-    image.onload = () => { 
-      context.filter = 'grayscale(100%)';
-      context.drawImage(image, 42, 42, 636, 796);
-      context.filter = 'none';
-    }; 
-    image.src = photo 
+    await new Promise((resolve) => {
+      const image = new Image(); 
+      image.crossOrigin = 'anonymous'; 
+      image.onload = () => { 
+        context.filter = 'grayscale(100%)';
+        context.drawImage(image, 42, 42, 636, 796);
+        context.filter = 'none';
+        resolve(true);
+      }; 
+      image.src = photo 
+    });
   }
 }

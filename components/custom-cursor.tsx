@@ -8,73 +8,95 @@ export function CustomCursor() {
   const [cursorType, setCursorType] = useState<'default' | 'pointer' | 'text'>('default')
   const [cursorColor, setCursorColor] = useState<'yellow' | 'green'>('yellow')
   const [isVisible, setIsVisible] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false)
 
   useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      setIsDisabled(true);
+      return;
+    }
+
     let frameId: number;
+    let ticking = false;
+    let latestEvent: MouseEvent | null = null;
+
+    const processFrame = () => {
+      if (!latestEvent) {
+        ticking = false;
+        return;
+      }
+
+      const e = latestEvent;
+      setMousePosition({ x: e.clientX, y: e.clientY })
+      setIsVisible(true)
+
+      const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement
+      if (!target) {
+        ticking = false;
+        return;
+      }
+
+      const isInput = target.tagName.toLowerCase() === 'input' || target.tagName.toLowerCase() === 'textarea'
+      const isClickable = 
+        target.tagName.toLowerCase() === 'button' ||
+        target.tagName.toLowerCase() === 'a' ||
+        target.closest('button') ||
+        target.closest('a') ||
+        window.getComputedStyle(target).cursor === 'pointer'
+
+      if (isInput) {
+        setCursorType('text')
+      } else if (isClickable) {
+        setCursorType('pointer')
+      } else {
+        setCursorType('default')
+      }
+
+      // Check background color using semantic classes
+      let el: HTMLElement | null = target;
+      let isLight = false; // body defaults to dark green
+      
+      while (el && el.tagName !== 'HTML') {
+        const classes = Array.from(el.classList);
+        
+        const hasDarkBg = classes.some(c => c === 'bg-foreground' || c === 'bg-black' || c.startsWith('bg-[#0B'));
+        if (hasDarkBg) {
+          isLight = false;
+          break;
+        }
+
+        const hasLightBg = classes.some(c => 
+          c === 'bg-primary' || 
+          c === 'bg-background' || 
+          c === 'bg-card' || 
+          c === 'bg-muted' || 
+          c === 'bg-white'
+        );
+        
+        if (hasLightBg) {
+          isLight = true;
+          break;
+        }
+        
+        el = el.parentElement;
+      }
+      
+      setCursorColor(isLight ? 'green' : 'yellow');
+      ticking = false;
+    }
 
     const updateMousePosition = (e: MouseEvent) => {
-      // Use requestAnimationFrame to throttle the DOM calculations
-      cancelAnimationFrame(frameId);
-      frameId = requestAnimationFrame(() => {
-        setMousePosition({ x: e.clientX, y: e.clientY })
-        setIsVisible(true)
-
-        const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement
-        if (!target) return
-
-        const isInput = target.tagName.toLowerCase() === 'input' || target.tagName.toLowerCase() === 'textarea'
-        const isClickable = 
-          target.tagName.toLowerCase() === 'button' ||
-          target.tagName.toLowerCase() === 'a' ||
-          target.closest('button') ||
-          target.closest('a') ||
-          window.getComputedStyle(target).cursor === 'pointer'
-
-        if (isInput) {
-          setCursorType('text')
-        } else if (isClickable) {
-          setCursorType('pointer')
-        } else {
-          setCursorType('default')
-        }
-
-        // Check background color using semantic classes
-        let el: HTMLElement | null = target;
-        let isLight = false; // body defaults to dark green
-        
-        while (el && el.tagName !== 'HTML') {
-          const classes = Array.from(el.classList);
-          
-          const hasDarkBg = classes.some(c => c === 'bg-foreground' || c === 'bg-black' || c.startsWith('bg-[#0B'));
-          if (hasDarkBg) {
-            isLight = false;
-            break;
-          }
-
-          const hasLightBg = classes.some(c => 
-            c === 'bg-primary' || 
-            c === 'bg-background' || 
-            c === 'bg-card' || 
-            c === 'bg-muted' || 
-            c === 'bg-white'
-          );
-          
-          if (hasLightBg) {
-            isLight = true;
-            break;
-          }
-          
-          el = el.parentElement;
-        }
-        
-        setCursorColor(isLight ? 'green' : 'yellow');
-      });
+      latestEvent = e;
+      if (!ticking) {
+        frameId = requestAnimationFrame(processFrame);
+        ticking = true;
+      }
     }
     
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
 
-    window.addEventListener('mousemove', updateMousePosition)
+    window.addEventListener('mousemove', updateMousePosition, { passive: true })
     document.addEventListener('mouseleave', handleMouseLeave)
     document.addEventListener('mouseenter', handleMouseEnter)
 
@@ -86,7 +108,7 @@ export function CustomCursor() {
     }
   }, [])
 
-  if (typeof window === 'undefined') return null
+  if (typeof window === 'undefined' || isDisabled) return null
 
   const isPointer = cursorType === 'pointer'
   const isText = cursorType === 'text'

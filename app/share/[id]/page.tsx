@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const id = params.id;
+  const { id } = await params;
   const data = await kv.get<{ name: string }>(`hh-goa:${id}`);
 
   if (!data) {
@@ -44,7 +44,7 @@ export async function generateMetadata(
 }
 
 export default async function SharePage({ params }: Props) {
-  const id = params.id;
+  const { id } = await params;
   const data = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
 
   if (!data) {
