@@ -289,7 +289,7 @@ export function IdCardGenerator() {
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
               <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
-                <p className="font-mono text-[22px] font-black leading-none uppercase">{form.name}</p>
+                <p className="font-mono text-[19px] font-black leading-none uppercase">{form.name}</p>
                 <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
@@ -398,8 +398,8 @@ export function IdCardGenerator() {
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
               <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between">
-                <p className="font-mono text-[24px] font-black leading-none uppercase">{form.name}</p>
-                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
+                <p className="font-mono text-[20px] font-black leading-none uppercase">{form.name}</p>
+                <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[10px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
               <p className="absolute bottom-[13%] left-[8%] font-mono text-[12px] font-bold uppercase">{form.stack}</p>
@@ -421,9 +421,34 @@ export function IdCardGenerator() {
   )
 }
 
+function drawImageCover(
+  context: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+) {
+  const imgRatio = img.naturalWidth / img.naturalHeight;
+  const targetRatio = w / h;
+  let sx = 0, sy = 0, sWidth = img.naturalWidth, sHeight = img.naturalHeight;
+
+  if (imgRatio > targetRatio) {
+    sWidth = img.naturalHeight * targetRatio;
+    sx = (img.naturalWidth - sWidth) / 2;
+  } else {
+    sHeight = img.naturalWidth / targetRatio;
+    sy = (img.naturalHeight - sHeight) / 2;
+  }
+
+  context.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
+}
+
 export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
   const context = canvas.getContext('2d'); if (!context) return
   
+  await document.fonts.ready;
+
   canvas.width = 1024;
   canvas.height = 1536;
   
@@ -436,15 +461,14 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.roundRect(0, 0, 1024, 1536, 48);
   context.clip();
 
-  // 1.1 Draw User Photo (Bottom Layer)
-  // DOM: top-[9.5%] left-[8%] w-[84%] h-[64.5%]
+  // 1.1 Draw User Photo (Bottom Layer) with object-cover aspect ratio preservation
   if (photo) { 
     await new Promise((resolve) => {
       const image = new Image(); 
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
         context.filter = 'grayscale(100%)';
-        context.drawImage(image, 82, 146, 860, 991);
+        drawImageCover(context, image, 82, 146, 860, 991);
         context.filter = 'none';
         resolve(true);
       }; 
@@ -465,15 +489,15 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     template.src = '/template.png';
   });
 
-  // 2.5 Draw Stamp (Top Right) - Preserve natural aspect ratio so it doesn't stretch down
+  // 2.5 Draw Stamp (Top Right) - Preserve natural aspect ratio
   await new Promise((resolve) => {
     const stamp = new Image();
     stamp.onload = () => {
       context.globalAlpha = 0.9;
       const stampWidth = 379;
       const stampHeight = (stamp.naturalHeight / stamp.naturalWidth) * stampWidth;
-      const stampX = 1024 - 10 - stampWidth; // right-[1%]
-      const stampY = 15; // top-[1%]
+      const stampX = 1024 - 10 - stampWidth;
+      const stampY = 15;
       context.drawImage(stamp, stampX, stampY, stampWidth, stampHeight);
       context.globalAlpha = 1.0;
       resolve(true);
@@ -485,21 +509,21 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.fillStyle = '#101010'; 
   context.textBaseline = 'top';
 
-  // Name (DOM: bottom-[16.5%], font-mono text-[24px] font-black)
-  context.font = '900 70px "Victor Mono", monospace'; 
+  // Name (DOM: font-mono text-[20px] font-black)
+  context.font = '900 58px "Victor Mono", monospace'; 
   context.textAlign = 'left';
-  context.fillText(data.name || 'YOUR NAME', 82, 1211); 
+  context.fillText(data.name || 'YOUR NAME', 82, 1222); 
   
-  // Class badge on the right
-  context.font = '900 27px "Victor Mono", monospace';
+  // Class badge on the right (slightly bigger font & padding)
+  context.font = '900 31px "Victor Mono", monospace';
   const badgeText = data.className || 'BUILDER CLASS';
   const textWidth = context.measureText(badgeText).width;
-  const paddingX = 24;
-  const paddingY = 10;
+  const paddingX = 26;
+  const paddingY = 12;
   const badgeWidth = textWidth + paddingX * 2;
-  const badgeHeight = 27 + paddingY * 2;
+  const badgeHeight = 31 + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1225; 
+  const badgeY = 1222; 
   
   // Shadow
   context.fillStyle = '#101010';
@@ -524,7 +548,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.font = '700 36px "Victor Mono", monospace'; 
   context.fillText(data.stack || 'YOUR STACK', 82, 1300); 
 
-  // Footer separator line (DOM: border-t-2 => 6px line on 1024px canvas)
+  // Footer separator line
   context.lineWidth = 6;
   context.strokeStyle = '#101010';
   context.beginPath();
@@ -532,7 +556,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.lineTo(942, 1354);
   context.stroke();
 
-  // Footer text (DOM: bottom-[9.5%], font-mono text-[9px] font-bold)
+  // Footer text
   context.font = '700 27px "Victor Mono", monospace';
   context.fillText('HH GOA / 2026 | #FRAMEINGOA', 82, 1363);
 }

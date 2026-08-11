@@ -96,7 +96,7 @@ export async function GET(request: Request) {
           {/* Name & Class Badge */}
           <div style={{
             position: 'absolute',
-            top: '1211px',
+            top: '1222px',
             left: '82px',
             right: '82px',
             display: 'flex',
@@ -105,7 +105,7 @@ export async function GET(request: Request) {
           }}>
             <div
               style={{
-                fontSize: '70px',
+                fontSize: '58px',
                 fontWeight: 900,
                 color: '#101010',
                 lineHeight: 1,
@@ -117,11 +117,11 @@ export async function GET(request: Request) {
             <div
               style={{
                 backgroundColor: '#ebd90b',
-                padding: '10px 24px',
+                padding: '12px 26px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '27px',
+                fontSize: '31px',
                 fontWeight: 900,
                 color: '#101010',
                 border: '6px solid #101010',
