@@ -72,7 +72,7 @@ export default async function SharePage({ params }: Props) {
         <ShareCardPreview imageUrl={imageUrl} altText={`${data.name}'s ID Card`} />
 
         {/* Right Column: Title, Info & CTA Button */}
-        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-md w-full">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-md w-full md:w-1/2">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E5F500] mb-2">
             HACKER HOUSE GOA 2026
           </p>

@@ -24,7 +24,7 @@ export function ShareCardPreview({ imageUrl, altText }: { imageUrl: string; altT
   }
 
   return (
-    <div className="w-full flex justify-center items-center shrink-0">
+    <div className="w-full md:w-1/2 flex justify-center items-center shrink-0">
       <motion.div 
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
