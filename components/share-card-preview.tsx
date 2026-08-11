@@ -4,7 +4,7 @@ export function ShareCardPreview({ imageUrl, altText }: { imageUrl: string; altT
   return (
     <div className="w-full md:w-1/2 flex justify-center items-center shrink-0">
       <div 
-        className="card-paper relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] aspect-[2/3] rotate-[4deg] shadow-[12px_16px_0_#101010] rounded-2xl overflow-hidden border-4 border-black shrink-0 mx-auto cursor-pointer"
+        className="card-paper relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] aspect-[2/3] shadow-[10px_10px_0_#101010] rounded-2xl overflow-hidden border-4 border-black shrink-0 mx-auto cursor-pointer"
       >
         <img 
           src={imageUrl} 
