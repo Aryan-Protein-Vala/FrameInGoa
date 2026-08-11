@@ -65,31 +65,31 @@ export default async function SharePage({ params }: Props) {
   const imageUrl = `/api/og?id=${id}`;
 
   return (
-    <main className="paper-ui min-h-screen bg-[#0B6839] text-[#f4f0df] flex items-center justify-center py-10 px-5 font-mono overflow-y-auto" suppressHydrationWarning>
-      <div className="w-full max-w-5xl flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-16">
+    <main className="paper-ui min-h-screen w-full bg-[#0B6839] text-[#f4f0df] flex items-center justify-center py-6 px-4 font-mono overflow-x-hidden" suppressHydrationWarning>
+      <div className="w-full max-w-5xl flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 my-auto">
         
         {/* Left Column: Animated ID Card */}
         <ShareCardPreview imageUrl={imageUrl} altText={`${data.name}'s ID Card`} />
 
         {/* Right Column: Title, Info & CTA Button */}
-        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-md">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-md w-full">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#E5F500] mb-2">
             HACKER HOUSE GOA 2026
           </p>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#E5F500] font-[family-name:var(--font-imbue)] uppercase tracking-tight leading-none mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#E5F500] font-[family-name:var(--font-imbue)] uppercase tracking-tight leading-none mb-4 md:mb-6">
             {data.name}&apos;s<br />ID CARD
           </h1>
 
-          <p className="text-xs sm:text-sm font-semibold opacity-90 leading-relaxed mb-8 max-w-sm">
+          <p className="text-xs sm:text-sm font-semibold opacity-90 leading-relaxed mb-6 md:mb-8 max-w-sm">
             Official builder pass created for Hacker House Goa 2026. Join the station, build your stack, and claim your card.
           </p>
 
           <div className="w-full">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#E5F500]">Ready to build?</p>
+            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#E5F500]">Ready to build?</p>
             <Link 
               href="/"
-              className="block w-full border-4 border-black bg-[#E5F500] px-6 py-5 text-lg md:text-xl font-black uppercase tracking-[0.08em] text-black shadow-[8px_8px_0_#101010] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#101010] text-center"
+              className="block w-full border-4 border-black bg-[#E5F500] px-5 py-4 sm:px-6 sm:py-5 text-base sm:text-lg md:text-xl font-black uppercase tracking-[0.08em] text-black shadow-[6px_6px_0_#101010] sm:shadow-[8px_8px_0_#101010] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#101010] text-center"
             >
               GENERATE YOUR HH GOA ID ↗
             </Link>

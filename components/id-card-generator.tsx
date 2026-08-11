@@ -430,7 +430,7 @@ export function IdCardGenerator() {
             <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
         </div>
-        <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
+        <div className="mt-10 flex flex-col items-center justify-center border-2 border-dashed border-primary bg-transparent p-4 sm:p-6 md:p-8 relative overflow-hidden w-full">
           {/* Tropical Comp 7: Peeking inside result preview box */}
           <motion.img 
             src="/tropical/comp-7.png" 
@@ -454,17 +454,18 @@ export function IdCardGenerator() {
 
           <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
           
-          <motion.div 
-            ref={cardRef}
-            initial={false}
-            animate={{
-              filter: isDeveloping 
-                ? 'brightness(0) contrast(2)' 
-                : 'brightness(1) contrast(1)'
-            }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="card-paper pencil-card relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10"
-          >
+          <div className="w-full flex justify-center items-center py-2 relative z-10">
+            <motion.div 
+              ref={cardRef}
+              initial={false}
+              animate={{
+                filter: isDeveloping 
+                  ? 'brightness(0) contrast(2)' 
+                  : 'brightness(1) contrast(1)'
+              }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="card-paper pencil-card relative w-[min(78vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[8px_8px_0_var(--primary)] sm:shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10 mx-auto"
+            >
             {/* User Photo Base Layer */}
             {photo ? (
               <img src={photo} alt="Generated builder card" className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] object-cover grayscale z-0" />
@@ -494,6 +495,7 @@ export function IdCardGenerator() {
               </div>
             </div>
           </motion.div>
+          </div>
         </div>
       </section>
 
