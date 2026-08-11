@@ -317,7 +317,7 @@ export function IdCardGenerator() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class<input value={form.className} onChange={(e) => update('className', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
-            <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
+            <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0_#101010] active:translate-y-0 active:shadow-none">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
           </div>
         </div>
       </section>
@@ -330,7 +330,7 @@ export function IdCardGenerator() {
             <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
         </div>
-        <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
+        <div className="ambient-glow mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative">
           
           <AnimatePresence>
             {isFlashing && (
@@ -344,8 +344,6 @@ export function IdCardGenerator() {
             )}
           </AnimatePresence>
 
-          <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
-          
           <motion.div 
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -353,7 +351,8 @@ export function IdCardGenerator() {
             style={{ rotateX, rotateY, perspective: 1000 }}
             className="relative z-0"
           >
-            <motion.div 
+            <motion.canvas 
+              ref={canvasRef}
               initial={false}
               animate={{
                 filter: isDeveloping 
@@ -361,22 +360,11 @@ export function IdCardGenerator() {
                   : 'brightness(1) contrast(1)'
               }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="card-paper pencil-card w-[min(82vw,390px)] rotate-[-1.5deg] border-2 border-foreground bg-card p-3 shadow-[6px_8px_0_rgba(0,0,0,0.25)] rounded-sm"
-            >
-              <div className="aspect-[4/5] overflow-hidden border-2 border-foreground bg-primary p-2">
-                {photo ? <img src={photo} alt="Generated builder card" className="h-full w-full object-cover grayscale" /> : <div className="flex h-full items-center justify-center font-mono text-xs font-bold uppercase">Upload a photo above</div>}
-              </div>
-              <div className="flex items-end justify-between gap-2 px-1 pt-3">
-                <div>
-                  <p className="font-mono text-lg font-black leading-none">{form.name}</p>
-                  <p className="mt-1 font-mono text-[10px] font-bold">{form.stack}</p>
-                </div>
-                <span className="bg-primary px-2 py-1 font-mono text-[9px] font-black">{form.className}</span>
-              </div>
-              <div className="mt-3 flex justify-between border-t-2 border-foreground pt-2 font-mono text-[9px] font-bold">
-                <span>HH GOA / 2026</span><span>#FRAMEINGOA</span>
-              </div>
-            </motion.div>
+              className="card-paper shadow-[6px_8px_0_rgba(0,0,0,0.25)] rounded-sm"
+              style={{ width: 'min(82vw, 390px)', height: 'auto' }}
+              width="1024" 
+              height="1536" 
+            />
           </motion.div>
         </div>
       </section>
@@ -393,90 +381,11 @@ export function IdCardGenerator() {
 export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
   const context = canvas.getContext('2d'); if (!context) return
   
-  canvas.width = 720;
-  canvas.height = 1020;
+  canvas.width = 1024;
+  canvas.height = 1536;
   
-  const WARM_YELLOW = '#ebd90b';
-  
-  // Background (Card paper - Cream)
-  context.fillStyle = '#f4f0df';
-  context.fillRect(0, 0, 720, 1020);
-  
-  // Pencil stroke around the card (mimics .pencil-card::after)
-  context.save();
-  context.translate(360, 510);
-  context.rotate(-0.35 * Math.PI / 180);
-  context.translate(-360, -510);
-  context.strokeStyle = 'rgba(23, 23, 19, 0.5)';
-  context.lineWidth = 1.5;
-  context.strokeRect(9, 0, 704, 1024);
-  context.restore();
-
-  // Outer Border
-  context.strokeStyle = '#101010';
-  context.lineWidth = 8;
-  context.strokeRect(4, 4, 712, 1012);
-  
-  // Photo Container (Warm Yellow)
-  context.fillStyle = WARM_YELLOW;
-  context.fillRect(24, 24, 672, 832);
-  context.lineWidth = 4;
-  context.strokeRect(24, 24, 672, 832);
-  
-  // Inner Photo Border Placeholder
-  context.strokeRect(40, 40, 640, 800);
-
-  // Text content
-  context.fillStyle = '#101010'; 
-  context.textAlign = 'left';
-  
-  // Name (Bigger and bolder)
-  context.font = '900 44px "Victor Mono", monospace'; 
-  context.fillText(data.name || 'YOUR NAME', 32, 915); 
-  
-  // Stack
-  context.font = '700 20px "Victor Mono", monospace'; 
-  context.fillText(data.stack || 'YOUR STACK', 32, 942); 
-  
-  // Builder Class Badge
-  context.font = '900 18px "Victor Mono", monospace';
-  const badgeText = data.className || 'BUILDER CLASS';
-  const badgeWidth = context.measureText(badgeText).width + 24;
-  context.fillStyle = WARM_YELLOW;
-  context.fillRect(720 - 32 - badgeWidth, 882, badgeWidth, 32);
-  context.fillStyle = '#101010';
-  context.textAlign = 'center';
-  context.fillText(badgeText, 720 - 32 - badgeWidth / 2, 905);
-  
-  // Pencil rule above footer
-  // Top thick line
-  context.beginPath();
-  context.moveTo(32, 965);
-  context.lineTo(688, 965);
-  context.lineWidth = 2;
-  context.strokeStyle = '#101010';
-  context.stroke();
-  
-  // Bottom thin pencil line slightly rotated
-  context.save();
-  context.translate(360, 968);
-  context.rotate(-0.25 * Math.PI / 180);
-  context.translate(-360, -968);
-  context.beginPath();
-  context.moveTo(32, 968);
-  context.lineTo(688, 968);
-  context.lineWidth = 1;
-  context.strokeStyle = 'rgba(23, 23, 19, 0.5)';
-  context.stroke();
-  context.restore();
-  
-  // Footer text
-  context.fillStyle = '#101010';
-  context.font = '900 16px "Victor Mono", monospace';
-  context.textAlign = 'left';
-  context.fillText('HH GOA / 2026', 32, 992);
-  context.textAlign = 'right';
-  context.fillText('#FRAMEINGOA', 688, 992);
+  // Clear Canvas
+  context.clearRect(0, 0, 1024, 1536);
   
   // Draw Photo if exists
   if (photo) { 
@@ -484,12 +393,53 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
       const image = new Image(); 
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
-        context.filter = 'grayscale(100%)';
-        context.drawImage(image, 42, 42, 636, 796);
-        context.filter = 'none';
+        context.drawImage(image, 112, 250, 800, 800);
         resolve(true);
       }; 
       image.src = photo 
     });
   }
+
+  // Load and Draw Template with Shadow
+  await new Promise((resolve) => {
+    const template = new Image();
+    template.crossOrigin = 'anonymous';
+    template.onload = () => {
+      context.shadowColor = 'rgba(0,0,0,0.5)';
+      context.shadowBlur = 15;
+      context.shadowOffsetY = 5;
+      context.drawImage(template, 0, 0, 1024, 1536);
+      resolve(true);
+    };
+    template.src = '/tropical-template.png';
+  });
+
+  // Reset shadow
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.shadowOffsetY = 0;
+
+  // Text alignment
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+
+  // NAME
+  context.fillStyle = '#042F2E';
+  context.font = '900 42px "Victor Mono", monospace';
+  if ('letterSpacing' in context) {
+    (context as any).letterSpacing = '2px';
+  }
+  context.fillText((data.name || 'YOUR NAME').toUpperCase(), 512, 1235);
+  if ('letterSpacing' in context) {
+    (context as any).letterSpacing = '0px';
+  }
+
+  // STACK
+  context.font = '700 36px "Victor Mono", monospace';
+  context.fillText((data.stack || 'YOUR STACK').toUpperCase(), 512, 1365);
+
+  // BUILDER CLASS
+  context.fillStyle = '#E04F5F';
+  context.font = '900 30px "Victor Mono", monospace';
+  context.fillText((data.className || 'BUILDER CLASS').toUpperCase(), 512, 1430);
 }

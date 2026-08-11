@@ -233,3 +233,17 @@
   text-underline-offset: 5px;
   text-decoration-color: #171713;
 }
+
+.ambient-glow {
+  position: relative;
+}
+
+.ambient-glow::before {
+  content: "";
+  position: absolute;
+  inset: -100px;
+  background: radial-gradient(circle at center, rgba(234, 88, 12, 0.45) 0%, rgba(236, 72, 153, 0.35) 40%, transparent 70%);
+  filter: blur(80px);
+  z-index: -2;
+  pointer-events: none;
+}
