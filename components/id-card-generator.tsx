@@ -261,15 +261,33 @@ export function IdCardGenerator() {
         </div>
       </header>
 
-      <section id="top" className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:grid-cols-[1.05fr_0.95fr] md:gap-16 md:px-12 md:py-20">
-        <div className="flex flex-col justify-center">
+      <section id="top" className="relative mx-auto grid max-w-7xl gap-10 px-5 py-12 md:grid-cols-[1.05fr_0.95fr] md:gap-16 md:px-12 md:py-20">
+        {/* Tropical Comp 1: Sneaking behind hero title */}
+        <motion.img 
+          src="/tropical/comp-1.png" 
+          alt="Tropical deco" 
+          className="absolute -top-10 -left-10 w-28 md:w-40 pointer-events-auto z-0 -rotate-12 opacity-85 cursor-pointer md:z-10" 
+          whileHover={{ y: -14, scale: 1.15, rotate: -6 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
+        <div className="flex flex-col justify-center relative z-10">
           <p className="mb-5 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-primary">// TASK #1 · FRAME IN GOA</p>
           <h1 className="font-mono text-[clamp(3.3rem,8vw,7.5rem)] font-black leading-[0.84] tracking-[-0.1em] text-balance font-[family-name:var(--font-imbue)]">MAKE YOUR<br /><span className="text-primary">ID CARD.</span></h1>
           <p className="mt-8 max-w-md font-mono text-sm font-semibold leading-6">Upload your photo. Enter your details. Get your Hacker House Goa 2026 ID card in seconds.</p>
           <a href="#generator" className="mt-8 w-fit border-2 border-foreground bg-primary px-6 py-3 font-mono text-xs font-black uppercase tracking-widest shadow-[5px_5px_0_var(--foreground)] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_var(--foreground)]">START GENERATING ↘</a>
         </div>
         <div className="relative flex min-h-[330px] items-center justify-center md:min-h-[440px]">
-          <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground">
+          {/* Tropical Comp 2: Peeking behind hero card */}
+          <motion.img 
+            src="/tropical/comp-2.png" 
+            alt="Tropical deco" 
+            className="absolute -bottom-8 -right-8 w-32 md:w-44 pointer-events-auto z-0 rotate-12 opacity-90 cursor-pointer md:z-10" 
+            whileHover={{ y: -12, scale: 1.15, rotate: 18 }}
+            transition={{ type: "spring", stiffness: 350, damping: 12 }}
+          />
+
+          <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10">
             {/* User Photo Base Layer */}
             {photo ? (
               <img src={photo} alt="Uploaded builder" className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] object-cover grayscale z-0" />
@@ -304,8 +322,26 @@ export function IdCardGenerator() {
         </div>
       </section>
 
-      <section id="generator" className="border-y-2 border-foreground bg-primary px-5 py-12 md:px-12 md:py-16">
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
+      <section id="generator" className="relative border-y-2 border-foreground bg-primary px-5 py-12 md:px-12 md:py-16">
+        {/* Tropical Comp 3: Sneaking at top-left of generator */}
+        <motion.img 
+          src="/tropical/comp-3.png" 
+          alt="Tropical deco" 
+          className="absolute -top-12 left-4 w-28 md:w-36 pointer-events-auto z-0 -rotate-6 opacity-85 cursor-pointer md:z-10" 
+          whileHover={{ y: -12, scale: 1.15, rotate: -12 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
+        {/* Tropical Comp 4: Sneaking at bottom-right of generator */}
+        <motion.img 
+          src="/tropical/comp-4.png" 
+          alt="Tropical deco" 
+          className="absolute -bottom-10 right-8 w-28 md:w-40 pointer-events-auto z-0 rotate-6 opacity-85 cursor-pointer md:z-10" 
+          whileHover={{ y: -12, scale: 1.15, rotate: 12 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20 relative z-10">
           <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em]">01 / YOUR DETAILS</p><h2 className="mt-4 font-mono text-4xl font-black leading-none tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LET&apos;S<br />MAKE IT<br /><span className="bg-foreground px-2 text-primary">OFFICIAL.</span></h2><p className="mt-6 max-w-xs font-mono text-xs font-bold leading-5">This card is your pass to the build station. Make it yours.</p></div>
           <div className="grid gap-5">
             <div 
@@ -346,8 +382,26 @@ export function IdCardGenerator() {
         </div>
       </section>
 
-      <section id="result-section" className="mx-auto max-w-7xl px-5 py-12 md:px-12 md:py-20">
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <section id="result-section" className="relative mx-auto max-w-7xl px-5 py-12 md:px-12 md:py-20">
+        {/* Tropical Comp 5: Top-right of result header */}
+        <motion.img 
+          src="/tropical/comp-5.png" 
+          alt="Tropical deco" 
+          className="absolute -top-10 right-6 w-28 md:w-36 pointer-events-auto z-0 rotate-12 opacity-85 cursor-pointer md:z-10" 
+          whileHover={{ y: -12, scale: 1.15, rotate: 18 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
+        {/* Tropical Comp 6: Bottom-left of result section */}
+        <motion.img 
+          src="/tropical/comp-6.png" 
+          alt="Tropical deco" 
+          className="absolute -bottom-8 -left-6 w-32 md:w-44 pointer-events-auto z-0 -rotate-12 opacity-90 cursor-pointer md:z-10" 
+          whileHover={{ y: -12, scale: 1.15, rotate: -18 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between relative z-10">
           <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br /><span className="text-primary">FEELS OFFICIAL.</span></h2></div>
           <div className="flex gap-3">
             <button onClick={download} disabled={!isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-primary px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Download className="size-4" /> DOWNLOAD</button>
@@ -355,7 +409,15 @@ export function IdCardGenerator() {
           </div>
         </div>
         <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
-          
+          {/* Tropical Comp 7: Peeking inside result preview box */}
+          <motion.img 
+            src="/tropical/comp-7.png" 
+            alt="Tropical deco" 
+            className="absolute top-2 left-2 w-24 md:w-32 pointer-events-auto z-0 -rotate-6 opacity-75 cursor-pointer md:z-10" 
+            whileHover={{ y: -10, scale: 1.15, rotate: 6 }}
+            transition={{ type: "spring", stiffness: 350, damping: 12 }}
+          />
+
           <AnimatePresence>
             {isFlashing && (
               <motion.div 
@@ -378,7 +440,7 @@ export function IdCardGenerator() {
                 : 'brightness(1) contrast(1)'
             }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="card-paper pencil-card relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground"
+            className="card-paper pencil-card relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground z-10"
           >
             {/* User Photo Base Layer */}
             {photo ? (
