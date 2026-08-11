@@ -322,7 +322,7 @@ export function IdCardGenerator() {
             )}
           </AnimatePresence>
 
-          <canvas ref={canvasRef} className="hidden" width="720" height="900" />
+          <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
           
           <motion.div 
             onMouseMove={handleMouseMove}
@@ -370,19 +370,71 @@ export function IdCardGenerator() {
 
 export function drawIdCard(canvas: HTMLCanvasElement, data: FormState, photo: string | null) {
   const context = canvas.getContext('2d'); if (!context) return
-  context.fillStyle = '#e5f500'; context.fillRect(0, 0, 720, 900); context.fillStyle = '#101010'; context.fillRect(24, 24, 672, 852)
-  context.fillStyle = '#e5f500'; context.fillRect(52, 52, 616, 610)
   
+  canvas.width = 720;
+  canvas.height = 1020;
+  
+  // Background (Card paper - Cream)
+  context.fillStyle = '#f4f0df';
+  context.fillRect(0, 0, 720, 1020);
+  
+  // Outer Border
+  context.strokeStyle = '#101010';
+  context.lineWidth = 8;
+  context.strokeRect(4, 4, 712, 1012);
+  
+  // Photo Container (Yellow)
+  context.fillStyle = '#e5f500';
+  context.fillRect(24, 24, 672, 832);
+  context.lineWidth = 4;
+  context.strokeRect(24, 24, 672, 832);
+  
+  // Inner Photo Border Placeholder
+  context.strokeRect(40, 40, 640, 800);
+
+  // Text content
   context.fillStyle = '#101010'; 
-  context.font = '900 40px "Victor Mono", monospace'; context.fillText(data.name, 52, 730); 
-  context.font = '700 22px "Victor Mono", monospace'; context.fillText(data.stack, 52, 765); context.fillText(data.className, 52, 820)
+  context.textAlign = 'left';
   
+  // Name
+  context.font = '900 36px "Victor Mono", monospace'; 
+  context.fillText(data.name || 'YOUR NAME', 32, 910); 
+  
+  // Stack
+  context.font = '700 20px "Victor Mono", monospace'; 
+  context.fillText(data.stack || 'YOUR STACK', 32, 940); 
+  
+  // Builder Class Badge
+  context.font = '900 18px "Victor Mono", monospace';
+  const badgeText = data.className || 'BUILDER CLASS';
+  const badgeWidth = context.measureText(badgeText).width + 24;
+  context.fillStyle = '#e5f500';
+  context.fillRect(720 - 32 - badgeWidth, 882, badgeWidth, 32);
+  context.fillStyle = '#101010';
+  context.textAlign = 'center';
+  context.fillText(badgeText, 720 - 32 - badgeWidth / 2, 905);
+  
+  // Footer Line
+  context.beginPath();
+  context.moveTo(32, 965);
+  context.lineTo(688, 965);
+  context.lineWidth = 3;
+  context.stroke();
+  
+  // Footer text
+  context.font = '900 16px "Victor Mono", monospace';
+  context.textAlign = 'left';
+  context.fillText('HH GOA / 2026', 32, 992);
+  context.textAlign = 'right';
+  context.fillText('#FRAMEINGOA', 688, 992);
+  
+  // Draw Photo if exists
   if (photo) { 
     const image = new Image(); 
     image.crossOrigin = 'anonymous'; 
     image.onload = () => { 
       context.filter = 'grayscale(100%)';
-      context.drawImage(image, 72, 72, 576, 570) 
+      context.drawImage(image, 42, 42, 636, 796);
       context.filter = 'none';
     }; 
     image.src = photo 
