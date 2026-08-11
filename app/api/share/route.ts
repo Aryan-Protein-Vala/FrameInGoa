@@ -17,9 +17,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    if (!process.env.BLOB_READ_WRITE_TOKEN || !process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+    const hasBlob = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID;
+    const hasKV = (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) || process.env.REDIS_URL || process.env.KV_URL;
+
+    if (!hasBlob || !hasKV) {
       return NextResponse.json({ 
-        error: 'Vercel Blob or KV is not configured! Please link your Vercel project or add the environment variables to .env.local.' 
+        error: 'Vercel Blob or KV credentials missing in local environment. Please paste BLOB_READ_WRITE_TOKEN, KV_REST_API_URL, and KV_REST_API_TOKEN into .env.local.' 
       }, { status: 503 });
     }
 
