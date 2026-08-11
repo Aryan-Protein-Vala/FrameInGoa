@@ -1,13 +1,22 @@
 import { ImageResponse } from 'next/og';
 import { getCardData as fetchRedisCardData } from '@/lib/redis';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 
-// We fetch the font as an ArrayBuffer from our own hosted public folder or via a CDN fallback if not found locally.
-// The user must place VictorMono-Bold.ttf in the public/fonts directory for production.
-const fontUrl = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}/fonts/VictorMono-Bold.ttf` 
-  : 'http://localhost:3000/fonts/VictorMono-Bold.ttf';
+function getLocalBase64(relativePath: string, mimeType: string): string | null {
+  try {
+    const filePath = path.join(process.cwd(), 'public', relativePath);
+    if (fs.existsSync(filePath)) {
+      const fileBuffer = fs.readFileSync(filePath);
+      return `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+    }
+  } catch (e) {
+    console.warn(`Failed to read local asset ${relativePath}:`, e);
+  }
+  return null;
+}
 
 export async function GET(request: Request) {
   try {
@@ -27,33 +36,41 @@ export async function GET(request: Request) {
 
     if (!data) {
       data = {
-        name: 'BUILDER',
+        name: 'GOA BUILDER',
         stack: 'FULLSTACK',
         role: 'BUILDER CLASS',
-        avatar_url: `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/stamp.png`
+        avatar_url: ''
       };
     }
 
-    // Try fetching local font, fallback to Google Fonts if it fails (for dev convenience)
-    let fontData: ArrayBuffer;
+    // Load local font file directly from disk
+    let fontData: ArrayBuffer | null = null;
     try {
-      const fontRes = await fetch(fontUrl);
-      if (!fontRes.ok) throw new Error('Local font not found');
-      fontData = await fontRes.arrayBuffer();
-    } catch {
-      // Fallback to a known Google Font URL if the user hasn't downloaded it yet
-      const fallbackRes = await fetch('https://fonts.gstatic.com/s/victormono/v12/qWcqB6Wjgwt7OlTKYAxTzQxj.ttf');
-      fontData = await fallbackRes.arrayBuffer();
-    }
+      const fontPath = path.join(process.cwd(), 'public', 'fonts', 'VictorMono-Bold.ttf');
+      if (fs.existsSync(fontPath)) {
+        const buffer = fs.readFileSync(fontPath);
+        fontData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      }
+    } catch (e) {}
 
-    const host = process.env.VERCEL_URL || 'localhost:3000';
-    const baseUrl = host.startsWith('http') ? host : `https://${host}`;
+    // Fallback to Google Fonts if local font is missing
+    if (!fontData) {
+      try {
+        const fontRes = await fetch('https://fonts.gstatic.com/s/victormono/v12/qWcqB6Wjgwt7OlTKYAxTzQxj.ttf');
+        if (fontRes.ok) {
+          fontData = await fontRes.arrayBuffer();
+        }
+      } catch (e) {}
+    }
 
     // Convert avatar to base64 Data URI for Satori
     let avatarDataUrl = data.avatar_url;
     if (avatarDataUrl && avatarDataUrl.startsWith('http')) {
       try {
-        const avatarRes = await fetch(avatarDataUrl);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const avatarRes = await fetch(avatarDataUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
         if (avatarRes.ok) {
           const buffer = await avatarRes.arrayBuffer();
           const base64 = Buffer.from(buffer).toString('base64');
@@ -62,30 +79,32 @@ export async function GET(request: Request) {
         }
       } catch (err) {
         console.warn('Failed to fetch avatar for OG image:', err);
+        avatarDataUrl = '';
       }
     }
 
-    // Convert template to base64 Data URI
-    let bgDataUrl = `${baseUrl}/template.png`;
-    try {
-      const bgRes = await fetch(bgDataUrl);
-      if (bgRes.ok) {
-        const buffer = await bgRes.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString('base64');
-        bgDataUrl = `data:image/png;base64,${base64}`;
-      }
-    } catch (e) {}
+    // Read template and stamp directly from local disk (zero network requests)
+    const bgDataUrl = getLocalBase64('template.png', 'image/png') || '';
+    const stampDataUrl = getLocalBase64('stamp.png', 'image/png') || '';
 
-    // Convert stamp to base64 Data URI
-    let stampDataUrl = `${baseUrl}/stamp.png`;
-    try {
-      const stampRes = await fetch(stampDataUrl);
-      if (stampRes.ok) {
-        const buffer = await stampRes.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString('base64');
-        stampDataUrl = `data:image/png;base64,${base64}`;
-      }
-    } catch (e) {}
+    const options: any = {
+      width: 1024,
+      height: 1536,
+      headers: {
+        'Cache-Control': 'public, max-age=604800, immutable',
+      },
+    };
+
+    if (fontData) {
+      options.fonts = [
+        {
+          name: 'Victor Mono',
+          data: fontData,
+          style: 'normal',
+          weight: 700,
+        },
+      ];
+    }
 
     return new ImageResponse(
       (
@@ -95,7 +114,7 @@ export async function GET(request: Request) {
             width: '100%',
             height: '100%',
             backgroundColor: '#f4f0df',
-            fontFamily: '"Victor Mono"',
+            fontFamily: fontData ? '"Victor Mono"' : 'monospace',
             position: 'relative',
             borderRadius: '48px',
             overflow: 'hidden',
@@ -124,26 +143,30 @@ export async function GET(request: Request) {
           </div>
 
           {/* Tropical Template Overlay */}
-          <img 
-            src={bgDataUrl} 
-            style={{ 
-              position: 'absolute',
-              top: 0, left: 0,
-              width: '1024px', height: '1536px',
-            }} 
-          />
+          {bgDataUrl ? (
+            <img 
+              src={bgDataUrl} 
+              style={{ 
+                position: 'absolute',
+                top: 0, left: 0,
+                width: '1024px', height: '1536px',
+              }} 
+            />
+          ) : null}
           
           {/* Stamp Layer */}
-          <img 
-            src={stampDataUrl} 
-            style={{ 
-              position: 'absolute',
-              top: '15px', right: '10px',
-              width: '379px',
-              objectFit: 'contain',
-              opacity: 0.9,
-            }} 
-          />
+          {stampDataUrl ? (
+            <img 
+              src={stampDataUrl} 
+              style={{ 
+                position: 'absolute',
+                top: '15px', right: '10px',
+                width: '379px',
+                objectFit: 'contain',
+                opacity: 0.9,
+              }} 
+            />
+          ) : null}
 
           {/* Name & Class Badge */}
           <div style={{
@@ -223,25 +246,11 @@ export async function GET(request: Request) {
           </div>
         </div>
       ),
-      {
-        width: 1024,
-        height: 1536,
-        fonts: [
-          {
-            name: 'Victor Mono',
-            data: fontData,
-            style: 'normal',
-            weight: 700,
-          },
-        ],
-        headers: {
-          'Cache-Control': 'public, max-age=604800, immutable',
-        },
-      }
+      options
     );
   } catch (e: any) {
-    console.log(`${e.message}`);
-    return new Response(`Failed to generate the image`, {
+    console.error('OG image generation catch block:', e);
+    return new Response(`Failed to generate the image: ${e.message}`, {
       status: 500,
     });
   }
