@@ -70,7 +70,9 @@ export function CustomCursor() {
           c === 'bg-background' || 
           c === 'bg-card' || 
           c === 'bg-muted' || 
-          c === 'bg-white'
+          c === 'bg-white' ||
+          c.startsWith('bg-[#E5') ||
+          c.startsWith('bg-[#f4')
         );
         
         if (hasLightBg) {
