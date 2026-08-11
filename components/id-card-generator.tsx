@@ -602,7 +602,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
 
   const rawRole = data.className || 'BUILDER CLASS';
   const displayRole = rawRole.length > 14 ? `${rawRole.slice(0, 14)}...` : rawRole;
-  const roleFontSize = rawRole.length > 12 ? 22 : 28;
+  const roleFontSize = rawRole.length > 12 ? 24 : 32;
 
   const rawStack = data.stack || 'YOUR STACK';
   const displayStack = rawStack.length > 22 ? `${rawStack.slice(0, 22)}...` : rawStack;
@@ -616,26 +616,26 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   context.textAlign = 'left';
   context.fillText(displayName, 82, 1212 + offsetY); 
   
-  // Class badge on the right (slightly bigger font & padding)
+  // Class badge on the right (bigger bold badge with roomier yellow padding)
   context.font = `900 ${roleFontSize}px "Victor Mono", monospace`;
   const textWidth = context.measureText(displayRole).width;
-  const paddingX = 20;
-  const paddingY = 10;
+  const paddingX = 28;
+  const paddingY = 14;
   const badgeWidth = textWidth + paddingX * 2;
   const badgeHeight = roleFontSize + paddingY * 2;
   const badgeX = 942 - badgeWidth; 
-  const badgeY = 1212 + offsetY; 
+  const badgeY = 1210 + offsetY; 
   
   // Shadow
   context.fillStyle = '#101010';
-  context.fillRect(badgeX + 5, badgeY + 5, badgeWidth, badgeHeight);
+  context.fillRect(badgeX + 6, badgeY + 6, badgeWidth, badgeHeight);
 
   // Background
   context.fillStyle = '#ebd90b';
   context.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
 
   // Border
-  context.lineWidth = 5;
+  context.lineWidth = 6;
   context.strokeStyle = '#101010';
   context.strokeRect(badgeX, badgeY, badgeWidth, badgeHeight);
 

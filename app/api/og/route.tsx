@@ -113,7 +113,7 @@ export async function GET(request: Request) {
 
     const rawRole = data.role || 'BUILDER CLASS';
     const displayRole = rawRole.length > 14 ? `${rawRole.slice(0, 14)}...` : rawRole;
-    const roleFontSize = rawRole.length > 12 ? '22px' : '28px';
+    const roleFontSize = rawRole.length > 12 ? '24px' : '32px';
 
     const rawStack = data.stack || 'YOUR STACK';
     const displayStack = rawStack.length > 22 ? `${rawStack.slice(0, 22)}...` : rawStack;
@@ -209,17 +209,17 @@ export async function GET(request: Request) {
             <div
               style={{
                 backgroundColor: '#ebd90b',
-                padding: '10px 20px',
+                padding: '14px 28px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: roleFontSize,
                 fontWeight: 900,
                 color: '#101010',
-                border: '5px solid #101010',
-                boxShadow: '5px 5px 0px #101010',
+                border: '6px solid #101010',
+                boxShadow: '6px 6px 0px #101010',
                 whiteSpace: 'nowrap',
-                maxWidth: '320px',
+                maxWidth: '340px',
                 overflow: 'hidden',
               }}
             >
