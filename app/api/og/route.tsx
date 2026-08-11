@@ -132,7 +132,7 @@ export async function GET(request: Request) {
                  src={avatarDataUrl} 
                  style={{ 
                    width: '100%', height: '100%',
-                   objectFit: 'cover', filter: 'grayscale(100%)' 
+                   objectFit: 'cover'
                  }} 
                />
              ) : (
