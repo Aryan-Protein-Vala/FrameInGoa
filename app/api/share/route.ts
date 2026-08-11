@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
-import { kv } from '@vercel/kv';
+import { setCardData } from '@/lib/redis';
 import { nanoid } from 'nanoid';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
@@ -36,17 +36,7 @@ export async function POST(request: Request) {
       contentType: image.type,
     });
 
-    try {
-      if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-        await kv.set(
-          `hh-goa:${id}`,
-          { name, stack, role, avatar_url: blob.url },
-          { ex: 7 * 24 * 60 * 60 } // 7 days TTL
-        );
-      }
-    } catch (kvErr) {
-      console.warn('KV Storage Warning (ignored for share):', kvErr);
-    }
+    await setCardData(id, { name, stack, role, avatar_url: blob.url });
 
     return NextResponse.json({ id, url: blob.url });
   } catch (error: any) {

@@ -1,7 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next';
-import { kv } from '@vercel/kv';
+import { getCardData as fetchRedisCardData } from '@/lib/redis';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -9,12 +8,10 @@ type Props = {
 
 async function getCardData(id: string) {
   try {
-    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      const res = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
-      if (res) return res;
-    }
+    const res = await fetchRedisCardData(id);
+    if (res) return res;
   } catch (e) {
-    console.warn('KV read warning on share page:', e);
+    console.warn('Redis read warning on share page:', e);
   }
   return {
     name: 'GOA BUILDER',

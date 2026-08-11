@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
-import { kv } from '@vercel/kv';
+import { getCardData as fetchRedisCardData } from '@/lib/redis';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 // We fetch the font as an ArrayBuffer from our own hosted public folder or via a CDN fallback if not found locally.
 // The user must place VictorMono-Bold.ttf in the public/fonts directory for production.
@@ -20,11 +20,9 @@ export async function GET(request: Request) {
 
     let data: { name: string; stack: string; role: string; avatar_url: string } | null = null;
     try {
-      if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-        data = await kv.get<{ name: string; stack: string; role: string; avatar_url: string }>(`hh-goa:${id}`);
-      }
+      data = await fetchRedisCardData(id);
     } catch (e) {
-      console.warn('KV get warning in OG route:', e);
+      console.warn('Redis get warning in OG route:', e);
     }
 
     if (!data) {
