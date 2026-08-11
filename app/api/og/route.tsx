@@ -49,6 +49,8 @@ export async function GET(request: Request) {
             backgroundColor: '#f4f0df',
             fontFamily: '"Victor Mono"',
             position: 'relative',
+            borderRadius: '40px',
+            overflow: 'hidden',
           }}
         >
           {/* User Photo Base Layer */}
@@ -79,26 +81,49 @@ export async function GET(request: Request) {
             }} 
           />
 
-          {/* Name */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '1130px',
-              left: '102px',
-              fontSize: '80px',
-              fontWeight: 900,
-              color: '#101010',
-            }}
-          >
-            {data.name}
+          {/* Name & Class Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '1135px',
+            left: '82px',
+            right: '82px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <div
+              style={{
+                fontSize: '68px',
+                fontWeight: 900,
+                color: '#101010',
+              }}
+            >
+              {data.name}
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#ebd90b',
+                padding: '10px 24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '30px',
+                fontWeight: 900,
+                color: '#101010',
+                border: '4px solid #101010',
+              }}
+            >
+              {data.role}
+            </div>
           </div>
 
           {/* Stack */}
           <div
             style={{
               position: 'absolute',
-              top: '1220px',
-              left: '102px',
+              top: '1225px',
+              left: '82px',
               fontSize: '36px',
               fontWeight: 700,
               color: '#101010',
@@ -106,33 +131,13 @@ export async function GET(request: Request) {
           >
             {data.stack}
           </div>
-
-          {/* Role / Class */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '1310px',
-              left: '102px',
-              backgroundColor: '#ebd90b',
-              padding: '10px 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '30px',
-              fontWeight: 900,
-              color: '#101010',
-              border: '4px solid #101010',
-            }}
-          >
-            {data.role}
-          </div>
           
           <div
             style={{
               position: 'absolute',
-              top: '1430px',
-              left: '102px',
-              width: '820px',
+              top: '1370px',
+              left: '82px',
+              width: '860px',
               height: '4px',
               backgroundColor: '#101010',
             }}
@@ -141,8 +146,8 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1445px',
-              left: '102px',
+              top: '1390px',
+              left: '82px',
               fontSize: '28px',
               fontWeight: 700,
               color: '#101010',
@@ -153,8 +158,8 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '1445px',
-              right: '102px',
+              top: '1390px',
+              right: '82px',
               fontSize: '28px',
               fontWeight: 700,
               color: '#101010',
