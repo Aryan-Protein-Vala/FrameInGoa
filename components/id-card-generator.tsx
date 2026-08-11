@@ -227,7 +227,7 @@ export function IdCardGenerator() {
               image={rawImage}
               crop={crop}
               zoom={zoom}
-              aspect={4/5}
+              aspect={2/3}
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
@@ -269,12 +269,33 @@ export function IdCardGenerator() {
           <a href="#generator" className="mt-8 w-fit border-2 border-foreground bg-primary px-6 py-3 font-mono text-xs font-black uppercase tracking-widest shadow-[5px_5px_0_var(--foreground)] transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_var(--foreground)]">START GENERATING ↘</a>
         </div>
         <div className="relative flex min-h-[330px] items-center justify-center md:min-h-[440px]">
-          <div className="card-paper pencil-card w-[min(82vw,370px)] rotate-[4deg] border-2 border-foreground bg-card p-3 shadow-[10px_10px_0_var(--primary)] rounded-sm">
-            <div className="aspect-[4/5] overflow-hidden border-2 border-foreground bg-primary p-2">
-              {photo ? <img src={photo} alt="Uploaded builder" className="h-full w-full object-cover grayscale" /> : <div className="flex h-full flex-col items-center justify-center gap-4 border-2 border-dashed border-foreground font-mono text-center"><ImagePlus className="size-12" strokeWidth={1.5} /><span className="text-xs font-bold uppercase">Your face<br />goes here</span></div>}
+          <div className="relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df]">
+            {/* User Photo Base Layer */}
+            {photo ? (
+              <img src={photo} alt="Uploaded builder" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
+            ) : (
+              <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
+                <ImagePlus className="size-10" strokeWidth={1.5} />
+                <span className="text-[10px] font-bold uppercase leading-tight">Your face<br />goes here</span>
+              </div>
+            )}
+            
+            {/* Tropical Template Overlay */}
+            <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
+            
+            {/* Text Overlay */}
+            <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
+              <p className="absolute bottom-[24%] left-[10%] font-mono text-3xl font-black leading-none uppercase">{form.name}</p>
+              <p className="absolute bottom-[20%] left-[10%] font-mono text-xs font-bold uppercase">{form.stack}</p>
+              
+              <div className="absolute bottom-[13%] left-[10%]">
+                <span className="bg-[#ebd90b] px-3 py-1 border-2 border-[#101010] font-mono text-[10px] font-black uppercase shadow-[2px_2px_0_#101010]">{form.className}</span>
+              </div>
+              
+              <div className="absolute bottom-[5%] left-[10%] right-[10%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                <span>HH GOA / 2026</span><span>NO. 0001</span>
+              </div>
             </div>
-            <div className="flex items-end justify-between gap-3 px-1 pt-3"><div><p className="font-mono text-lg font-black leading-none">{form.name}</p><p className="mt-1 font-mono text-[10px] font-bold uppercase">{form.stack}</p></div><span className="bg-primary px-2 py-1 font-mono text-[9px] font-black uppercase">{form.className}</span></div>
-            <div className="mt-3 flex items-center justify-between border-t-2 border-foreground pt-2 font-mono text-[9px] font-bold"><span>HH GOA / 2026</span><span>NO. 0001</span></div>
           </div>
           <div className="absolute bottom-3 right-4 rotate-[-8deg] bg-primary px-3 py-2 font-mono text-[10px] font-black uppercase shadow-[4px_4px_0_var(--foreground)]">BUILD. SHIP. REPEAT.</div>
         </div>
@@ -317,7 +338,7 @@ export function IdCardGenerator() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class<input value={form.className} onChange={(e) => update('className', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
-            <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0_#101010] active:translate-y-0 active:shadow-none">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
+            <button onClick={generate} className="w-full border-2 border-foreground bg-[#0B6839] px-6 py-4 font-mono text-xs font-black uppercase tracking-[0.2em] text-white">{generated ? 'CARD GENERATED ✓' : 'GENERATE MY ID CARD ↗'}</button>
           </div>
         </div>
       </section>
@@ -330,7 +351,7 @@ export function IdCardGenerator() {
             <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
           </div>
         </div>
-        <div className="ambient-glow mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative">
+        <div className="mt-10 grid place-items-center border-2 border-dashed border-primary bg-transparent p-6 relative overflow-hidden">
           
           <AnimatePresence>
             {isFlashing && (
@@ -344,6 +365,8 @@ export function IdCardGenerator() {
             )}
           </AnimatePresence>
 
+          <canvas ref={canvasRef} className="hidden" width="720" height="1020" />
+          
           <motion.div 
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -351,8 +374,7 @@ export function IdCardGenerator() {
             style={{ rotateX, rotateY, perspective: 1000 }}
             className="relative z-0"
           >
-            <motion.canvas 
-              ref={canvasRef}
+            <motion.div 
               initial={false}
               animate={{
                 filter: isDeveloping 
@@ -360,11 +382,34 @@ export function IdCardGenerator() {
                   : 'brightness(1) contrast(1)'
               }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="card-paper shadow-[6px_8px_0_rgba(0,0,0,0.25)] rounded-sm"
-              style={{ width: 'min(82vw, 390px)', height: 'auto' }}
-              width="1024" 
-              height="1536" 
-            />
+              className="relative w-[min(82vw,340px)] aspect-[2/3] rotate-[-1.5deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df]"
+            >
+              {/* User Photo Base Layer */}
+              {photo ? (
+                <img src={photo} alt="Generated builder card" className="absolute top-[8%] left-[8%] w-[84%] h-[56%] object-cover grayscale z-0" />
+              ) : (
+                <div className="absolute top-[8%] left-[8%] w-[84%] h-[56%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
+                  Upload a photo above
+                </div>
+              )}
+              
+              {/* Tropical Template Overlay */}
+              <img src="/template.png" alt="Card Template" className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" />
+              
+              {/* Text Overlay */}
+              <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
+                <p className="absolute bottom-[24%] left-[10%] font-mono text-3xl font-black leading-none uppercase">{form.name}</p>
+                <p className="absolute bottom-[20%] left-[10%] font-mono text-xs font-bold uppercase">{form.stack}</p>
+                
+                <div className="absolute bottom-[13%] left-[10%]">
+                  <span className="bg-[#ebd90b] px-3 py-1 border-2 border-[#101010] font-mono text-[10px] font-black uppercase shadow-[2px_2px_0_#101010]">{form.className}</span>
+                </div>
+                
+                <div className="absolute bottom-[5%] left-[10%] right-[10%] flex items-center justify-between font-mono text-[9px] font-bold border-t-2 border-[#101010] pt-2">
+                  <span>HH GOA / 2026</span><span>#FRAMEINGOA</span>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -384,62 +429,81 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
   canvas.width = 1024;
   canvas.height = 1536;
   
-  // Clear Canvas
-  context.clearRect(0, 0, 1024, 1536);
+  // Background (Fallback cream)
+  context.fillStyle = '#f4f0df';
+  context.fillRect(0, 0, 1024, 1536);
   
-  // Draw Photo if exists
+  // 1. Draw User Photo (Bottom Layer)
   if (photo) { 
     await new Promise((resolve) => {
       const image = new Image(); 
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
-        context.drawImage(image, 112, 250, 800, 800);
+        context.filter = 'grayscale(100%)';
+        // photo box: top 8%, left 8%, width 84%, height 56%
+        // top = 1536 * 0.08 = 123
+        // left = 1024 * 0.08 = 82
+        // width = 1024 * 0.84 = 860
+        // height = 1536 * 0.56 = 860
+        context.drawImage(image, 82, 123, 860, 860);
+        context.filter = 'none';
         resolve(true);
       }; 
       image.src = photo 
     });
+  } else {
+    context.fillStyle = '#ebd90b';
+    context.fillRect(82, 123, 860, 860);
   }
 
-  // Load and Draw Template with Shadow
+  // 2. Draw Tropical Template (Middle Layer)
   await new Promise((resolve) => {
     const template = new Image();
-    template.crossOrigin = 'anonymous';
     template.onload = () => {
-      context.shadowColor = 'rgba(0,0,0,0.5)';
-      context.shadowBlur = 15;
-      context.shadowOffsetY = 5;
       context.drawImage(template, 0, 0, 1024, 1536);
       resolve(true);
     };
-    template.src = '/tropical-template.png';
+    template.src = '/template.png';
   });
-
-  // Reset shadow
-  context.shadowColor = 'transparent';
-  context.shadowBlur = 0;
-  context.shadowOffsetY = 0;
-
-  // Text alignment
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-
-  // NAME
-  context.fillStyle = '#042F2E';
-  context.font = '900 42px "Victor Mono", monospace';
-  if ('letterSpacing' in context) {
-    (context as any).letterSpacing = '2px';
-  }
-  context.fillText((data.name || 'YOUR NAME').toUpperCase(), 512, 1235);
-  if ('letterSpacing' in context) {
-    (context as any).letterSpacing = '0px';
-  }
-
-  // STACK
-  context.font = '700 36px "Victor Mono", monospace';
-  context.fillText((data.stack || 'YOUR STACK').toUpperCase(), 512, 1365);
-
-  // BUILDER CLASS
-  context.fillStyle = '#E04F5F';
+  
+  // 3. Draw Text (Top Layer)
+  context.fillStyle = '#101010'; 
+  context.textAlign = 'left';
+  
+  // Name
+  context.font = '900 80px "Victor Mono", monospace'; 
+  context.fillText(data.name || 'YOUR NAME', 102, 1200); 
+  
+  // Stack
+  context.font = '700 36px "Victor Mono", monospace'; 
+  context.fillText(data.stack || 'YOUR STACK', 102, 1260); 
+  
+  // Class badge background
   context.font = '900 30px "Victor Mono", monospace';
-  context.fillText((data.className || 'BUILDER CLASS').toUpperCase(), 512, 1430);
+  const textWidth = context.measureText(data.className || 'BUILDER CLASS').width;
+  const paddingX = 24;
+  const paddingY = 40;
+  
+  context.fillStyle = '#ebd90b';
+  context.fillRect(102, 1310, textWidth + paddingX * 2, paddingY * 2);
+  
+  context.lineWidth = 4;
+  context.strokeStyle = '#101010';
+  context.strokeRect(102, 1310, textWidth + paddingX * 2, paddingY * 2);
+  
+  context.fillStyle = '#101010';
+  context.fillText(data.className || 'BUILDER CLASS', 102 + paddingX, 1310 + paddingY + 10);
+
+  // Footer separator line
+  context.lineWidth = 4;
+  context.beginPath();
+  context.moveTo(102, 1430);
+  context.lineTo(922, 1430);
+  context.stroke();
+
+  // Footer text
+  context.font = '700 28px "Victor Mono", monospace';
+  context.fillText('HH GOA / 2026', 102, 1475);
+  context.textAlign = 'right';
+  context.fillText('#FRAMEINGOA', 922, 1475);
 }

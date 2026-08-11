@@ -36,6 +36,9 @@ export async function GET(request: Request) {
       fontData = await fallbackRes.arrayBuffer();
     }
 
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    const bgUrl = `${baseUrl}/template.png`;
+
     return new ImageResponse(
       (
         <div
@@ -46,48 +49,43 @@ export async function GET(request: Request) {
             backgroundColor: '#f4f0df',
             fontFamily: '"Victor Mono"',
             position: 'relative',
-            border: '8px solid #101010',
           }}
         >
-          {/* Inner Photo Frame */}
+          {/* User Photo Base Layer */}
           <div
             style={{
               position: 'absolute',
-              top: '24px', left: '24px',
-              width: '672px', height: '832px',
-              backgroundColor: '#ebd90b',
-              border: '4px solid #101010',
+              top: '123px', left: '82px',
+              width: '860px', height: '860px',
               display: 'flex',
             }}
           >
-             {/* Photo Inner Border */}
-             <div
-               style={{
-                 position: 'absolute',
-                 top: '16px', left: '16px',
-                 width: '640px', height: '800px',
-                 border: '4px solid #101010',
-               }}
-             />
-             
              <img 
                src={data.avatar_url} 
                style={{ 
-                 position: 'absolute',
-                 top: '18px', left: '18px',
-                 width: '636px', height: '796px',
+                 width: '100%', height: '100%',
                  objectFit: 'cover', filter: 'grayscale(100%)' 
                }} 
              />
           </div>
 
+          {/* Tropical Template Overlay */}
+          <img 
+            src={bgUrl} 
+            style={{ 
+              position: 'absolute',
+              top: 0, left: 0,
+              width: '1024px', height: '1536px',
+            }} 
+          />
+
           {/* Name */}
           <div
             style={{
               position: 'absolute',
-              top: '710px',
-              left: '32px',
-              fontSize: '44px',
+              top: '1130px',
+              left: '102px',
+              fontSize: '80px',
               fontWeight: 900,
               color: '#101010',
             }}
@@ -99,9 +97,9 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '765px',
-              left: '32px',
-              fontSize: '20px',
+              top: '1220px',
+              left: '102px',
+              fontSize: '36px',
               fontWeight: 700,
               color: '#101010',
             }}
@@ -113,16 +111,17 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '700px',
-              right: '32px',
+              top: '1310px',
+              left: '102px',
               backgroundColor: '#ebd90b',
-              padding: '6px 12px',
+              padding: '10px 24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '18px',
+              fontSize: '30px',
               fontWeight: 900,
               color: '#101010',
+              border: '4px solid #101010',
             }}
           >
             {data.role}
@@ -131,18 +130,43 @@ export async function GET(request: Request) {
           <div
             style={{
               position: 'absolute',
-              top: '805px',
-              left: '32px',
-              width: '656px',
-              height: '3px',
+              top: '1430px',
+              left: '102px',
+              width: '820px',
+              height: '4px',
               backgroundColor: '#101010',
             }}
           />
+
+          <div
+            style={{
+              position: 'absolute',
+              top: '1445px',
+              left: '102px',
+              fontSize: '28px',
+              fontWeight: 700,
+              color: '#101010',
+            }}
+          >
+            HH GOA / 2026
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              top: '1445px',
+              right: '102px',
+              fontSize: '28px',
+              fontWeight: 700,
+              color: '#101010',
+            }}
+          >
+            #FRAMEINGOA
+          </div>
         </div>
       ),
       {
-        width: 720,
-        height: 900,
+        width: 1024,
+        height: 1536,
         fonts: [
           {
             name: 'Victor Mono',
