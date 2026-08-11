@@ -401,6 +401,15 @@ export function IdCardGenerator() {
           transition={{ type: "spring", stiffness: 350, damping: 12 }}
         />
 
+        {/* Tropical Comp 8: Bottom-right of result section */}
+        <motion.img 
+          src="/tropical/comp-8.png" 
+          alt="Tropical deco" 
+          className="absolute -bottom-10 -right-6 w-32 md:w-44 pointer-events-auto z-0 rotate-12 opacity-85 cursor-pointer md:z-10" 
+          whileHover={{ y: -14, scale: 1.15, rotate: 18 }}
+          transition={{ type: "spring", stiffness: 350, damping: 12 }}
+        />
+
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between relative z-10">
           <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br /><span className="text-primary">FEELS OFFICIAL.</span></h2></div>
           <div className="flex gap-3">
