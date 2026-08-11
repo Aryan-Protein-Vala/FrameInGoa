@@ -244,15 +244,15 @@ export function IdCardGenerator() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <a href="#top" className="font-mono text-xs font-bold tracking-tight sm:text-sm">HH GOA / 2026</a>
           <nav className="hidden gap-6 md:flex">
-          <a href="#about" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+          <a href="#about" className="group relative font-mono text-sm font-bold uppercase no-pencil">
             About
             <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
           </a>
-          <a href="#generator" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+          <a href="#generator" className="group relative font-mono text-sm font-bold uppercase no-pencil">
             Generator
             <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
           </a>
-          <a href="#rules" className="group relative font-mono text-[10px] font-bold uppercase no-pencil">
+          <a href="#rules" className="group relative font-mono text-sm font-bold uppercase no-pencil">
             Rules
             <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full"></span>
           </a>
