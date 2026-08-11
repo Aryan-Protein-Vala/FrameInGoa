@@ -202,7 +202,7 @@ export function IdCardGenerator() {
   }
 
   return (
-    <main className="paper-ui min-h-screen bg-background text-foreground">
+    <main className="paper-ui min-h-screen text-foreground">
       {/* Cropper Modal */}
       {isCropping && rawImage && (
         <div className="fixed inset-0 z-50 flex flex-col bg-black/90 p-4">
