@@ -272,9 +272,9 @@ export function IdCardGenerator() {
           <div className="card-paper pencil-card relative w-[min(82vw,300px)] aspect-[2/3] rotate-[4deg] shadow-[10px_10px_0_var(--primary)] overflow-hidden bg-[#f4f0df] rounded-2xl border-2 border-foreground">
             {/* User Photo Base Layer */}
             {photo ? (
-              <img src={photo} alt="Uploaded builder" className="absolute top-[11%] left-[8%] w-[84%] h-[63%] object-cover grayscale z-0" />
+              <img src={photo} alt="Uploaded builder" className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] object-cover grayscale z-0" />
             ) : (
-              <div className="absolute top-[11%] left-[8%] w-[84%] h-[63%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
+              <div className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] bg-[#ebd90b] flex flex-col items-center justify-center gap-2 font-mono text-center z-0">
                 <ImagePlus className="size-10" strokeWidth={1.5} />
                 <span className="text-[10px] font-bold uppercase leading-tight">Your face<br />goes here</span>
               </div>
@@ -382,9 +382,9 @@ export function IdCardGenerator() {
           >
             {/* User Photo Base Layer */}
             {photo ? (
-              <img src={photo} alt="Generated builder card" className="absolute top-[11%] left-[8%] w-[84%] h-[63%] object-cover grayscale z-0" />
+              <img src={photo} alt="Generated builder card" className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] object-cover grayscale z-0" />
             ) : (
-              <div className="absolute top-[11%] left-[8%] w-[84%] h-[63%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
+              <div className="absolute top-[9.5%] left-[8%] w-[84%] h-[64.5%] bg-[#ebd90b] flex items-center justify-center font-mono text-[10px] font-bold uppercase text-center z-0">
                 Upload a photo above
               </div>
             )}
@@ -443,8 +443,8 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
       image.crossOrigin = 'anonymous'; 
       image.onload = () => { 
         context.filter = 'grayscale(100%)';
-        // photo box: top 11%, left 8%, width 84%, height 63%
-        context.drawImage(image, 82, 170, 860, 953);
+        // photo box: top 9.5%, left 8%, width 84%, height 64.5%
+        context.drawImage(image, 82, 147, 860, 976);
         context.filter = 'none';
         resolve(true);
       }; 
@@ -452,7 +452,7 @@ export async function drawIdCard(canvas: HTMLCanvasElement, data: FormState, pho
     });
   } else {
     context.fillStyle = '#ebd90b';
-    context.fillRect(82, 170, 860, 953);
+    context.fillRect(82, 147, 860, 976);
   }
 
   // 2. Draw Tropical Template (Middle Layer)
