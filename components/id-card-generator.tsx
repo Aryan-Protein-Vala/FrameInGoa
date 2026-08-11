@@ -324,7 +324,7 @@ export function IdCardGenerator() {
 
       <section id="result-section" className="mx-auto max-w-7xl px-5 py-12 md:px-12 md:py-20">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br />FEELS OFFICIAL.</h2></div>
+          <div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-primary">02 / YOUR CARD</p><h2 className="mt-3 font-mono text-4xl font-black tracking-[-0.08em] font-[family-name:var(--font-imbue)]">LOOKS GOOD.<br /><span className="text-primary">FEELS OFFICIAL.</span></h2></div>
           <div className="flex gap-3">
             <button onClick={download} disabled={!isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-primary px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Download className="size-4" /> DOWNLOAD</button>
             <button onClick={share} disabled={isSharing || !isCanvasReady} className="flex items-center gap-2 border-2 border-foreground bg-card px-5 py-3 font-mono text-xs font-black uppercase shadow-[4px_4px_0_var(--foreground)] disabled:opacity-50"><Share2 className="size-4" /> {isSharing ? 'SHARING...' : 'SHARE TO X'}</button>
