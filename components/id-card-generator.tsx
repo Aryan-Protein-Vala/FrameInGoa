@@ -73,6 +73,7 @@ export function IdCardGenerator() {
   const [isDeveloping, setIsDeveloping] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
   const [isCustomClass, setIsCustomClass] = useState(false)
+  const [isCustomStack, setIsCustomStack] = useState(false)
 
   const fileInput = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -386,12 +387,49 @@ export function IdCardGenerator() {
               )}
               <input onClick={(e) => ((e.target as HTMLInputElement).value = '')} ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2"><label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label><label className="font-mono text-[10px] font-black uppercase">Stack<input value={form.stack} onChange={(e) => update('stack', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label></div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
+              <label className="font-mono text-[10px] font-black uppercase">Stack
+                {isCustomStack ? (
+                  <div className="relative mt-2">
+                    <input autoFocus value={form.stack} onChange={(e) => update('stack', e.target.value)} placeholder="Type your custom stack..." className="w-full border-2 border-foreground bg-background px-3 py-3 pr-10 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" />
+                    <button onClick={() => { setIsCustomStack(false); update('stack', 'YOUR STACK'); }} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-foreground/10 p-1.5 text-foreground hover:bg-foreground/20 transition-colors shadow-sm">
+                      <X className="size-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <select 
+                    value={form.stack} 
+                    onChange={(e) => {
+                      if (e.target.value === 'OTHER...') {
+                        setIsCustomStack(true)
+                        update('stack', '')
+                      } else {
+                        update('stack', e.target.value)
+                      }
+                    }} 
+                    className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground appearance-none rounded-none cursor-pointer"
+                  >
+                    <option value="YOUR STACK">Select a stack...</option>
+                    <option value="NEXT.JS + TAILWIND">Next.js + Tailwind</option>
+                    <option value="REACT + NODE">React + Node</option>
+                    <option value="RUST + WASM">Rust + Wasm</option>
+                    <option value="SVELTE + GO">Svelte + Go</option>
+                    <option value="PYTHON + DJANGO">Python + Django</option>
+                    <option value="VUE + SUPABASE">Vue + Supabase</option>
+                    <option value="SOLANA + ANCHOR">Solana + Anchor</option>
+                    <option value="REACT NATIVE">React Native</option>
+                    <option value="FLUTTER + FIREBASE">Flutter + Firebase</option>
+                    <option value="OTHER...">Other (Custom)...</option>
+                  </select>
+                )}
+              </label>
+            </div>
             <label className="font-mono text-[10px] font-black uppercase">Builder class
               {isCustomClass ? (
                 <div className="relative mt-2">
                   <input autoFocus value={form.className} onChange={(e) => update('className', e.target.value)} placeholder="Type your custom class..." className="w-full border-2 border-foreground bg-background px-3 py-3 pr-10 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" />
-                  <button onClick={() => { setIsCustomClass(false); update('className', 'BUILDER CLASS'); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground">
+                  <button onClick={() => { setIsCustomClass(false); update('className', 'BUILDER CLASS'); }} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-foreground/10 p-1.5 text-foreground hover:bg-foreground/20 transition-colors shadow-sm">
                     <X className="size-4" />
                   </button>
                 </div>
