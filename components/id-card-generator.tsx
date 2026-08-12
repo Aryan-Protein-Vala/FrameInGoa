@@ -393,7 +393,7 @@ export function IdCardGenerator() {
                 {isCustomStack ? (
                   <div className="relative mt-2">
                     <input autoFocus value={form.stack} onChange={(e) => update('stack', e.target.value)} placeholder="Type your custom stack..." className="w-full border-2 border-foreground bg-background px-3 py-3 pr-10 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" />
-                    <button onClick={() => { setIsCustomStack(false); update('stack', 'YOUR STACK'); }} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-foreground/10 p-1.5 text-foreground hover:bg-foreground/20 transition-colors shadow-sm">
+                    <button onClick={() => { setIsCustomStack(false); update('stack', 'YOUR STACK'); }} className="absolute right-2 top-1/2 -translate-y-1/2 flex size-7 items-center justify-center border-2 border-foreground bg-card text-foreground hover:bg-foreground hover:text-background transition-colors">
                       <X className="size-4" />
                     </button>
                   </div>
@@ -412,12 +412,17 @@ export function IdCardGenerator() {
                   >
                     <option value="YOUR STACK">Select a stack...</option>
                     <option value="NEXT.JS + TAILWIND">Next.js + Tailwind</option>
+                    <option value="NEXT.JS + SUPABASE">Next.js + Supabase</option>
                     <option value="REACT + NODE">React + Node</option>
+                    <option value="PYTHON + PYTORCH">Python + PyTorch</option>
+                    <option value="LANGCHAIN + PINECONE">LangChain + Pinecone</option>
+                    <option value="RUST + SOLANA">Rust + Solana</option>
+                    <option value="SOLIDITY + FOUNDRY">Solidity + Foundry</option>
+                    <option value="EVM + HARDHAT">EVM + Hardhat</option>
                     <option value="RUST + WASM">Rust + Wasm</option>
                     <option value="SVELTE + GO">Svelte + Go</option>
                     <option value="PYTHON + DJANGO">Python + Django</option>
                     <option value="VUE + SUPABASE">Vue + Supabase</option>
-                    <option value="SOLANA + ANCHOR">Solana + Anchor</option>
                     <option value="REACT NATIVE">React Native</option>
                     <option value="FLUTTER + FIREBASE">Flutter + Firebase</option>
                     <option value="OTHER...">Other (Custom)...</option>
@@ -429,7 +434,7 @@ export function IdCardGenerator() {
               {isCustomClass ? (
                 <div className="relative mt-2">
                   <input autoFocus value={form.className} onChange={(e) => update('className', e.target.value)} placeholder="Type your custom class..." className="w-full border-2 border-foreground bg-background px-3 py-3 pr-10 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" />
-                  <button onClick={() => { setIsCustomClass(false); update('className', 'BUILDER CLASS'); }} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-foreground/10 p-1.5 text-foreground hover:bg-foreground/20 transition-colors shadow-sm">
+                  <button onClick={() => { setIsCustomClass(false); update('className', 'BUILDER CLASS'); }} className="absolute right-2 top-1/2 -translate-y-1/2 flex size-7 items-center justify-center border-2 border-foreground bg-card text-foreground hover:bg-foreground hover:text-background transition-colors">
                     <X className="size-4" />
                   </button>
                 </div>
