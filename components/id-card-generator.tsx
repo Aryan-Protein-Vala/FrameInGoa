@@ -14,7 +14,7 @@ const getHeic2Any = async () => {
 
 type FormState = { name: string; stack: string; className: string }
 
-const defaultForm: FormState = { name: 'YOUR NAME', stack: 'YOUR STACK', className: 'BUILDER CLASS' }
+const defaultForm: FormState = { name: '', stack: 'YOUR STACK', className: 'BUILDER CLASS' }
 
 const createImage = (url: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -388,7 +388,7 @@ export function IdCardGenerator() {
               <input onClick={(e) => ((e.target as HTMLInputElement).value = '')} ref={fileInput} type="file" accept="image/*,.heic" className="sr-only" onChange={(e: ChangeEvent<HTMLInputElement>) => loadFile(e.target.files?.[0])} />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="font-mono text-[10px] font-black uppercase">Name<input value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
+              <label className="font-mono text-[10px] font-black uppercase">Name<input placeholder="YOUR NAME" value={form.name} onChange={(e) => update('name', e.target.value)} className="mt-2 w-full border-2 border-foreground bg-background px-3 py-3 font-mono text-sm font-bold outline-none focus:ring-2 focus:ring-foreground" /></label>
               <label className="font-mono text-[10px] font-black uppercase">Stack
                 {isCustomStack ? (
                   <div className="relative mt-2">
@@ -563,7 +563,7 @@ export function IdCardGenerator() {
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
               <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between gap-1">
-                <p className="font-mono text-[14px] sm:text-[18px] md:text-[20px] font-black leading-none uppercase truncate">{form.name}</p>
+                <p className="font-mono text-[14px] sm:text-[18px] md:text-[20px] font-black leading-none uppercase truncate">{form.name || 'YOUR NAME'}</p>
                 <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
