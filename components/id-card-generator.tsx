@@ -319,7 +319,7 @@ export function IdCardGenerator() {
             {/* Text Overlay */}
             <div className="absolute inset-0 z-20 pointer-events-none text-[#101010]">
               <div className="absolute bottom-[16.5%] left-[8%] right-[8%] flex items-center justify-between gap-1">
-                <p className="font-mono text-[14px] sm:text-[17px] md:text-[19px] font-black leading-none uppercase truncate">{form.name}</p>
+                <p className="font-mono text-[14px] sm:text-[17px] md:text-[19px] font-black leading-none uppercase truncate">{form.name || 'YOUR NAME'}</p>
                 <span className="bg-[#ebd90b] px-2 py-1 border-2 border-[#101010] font-mono text-[8px] sm:text-[9px] font-black uppercase shadow-[2px_2px_0_#101010] whitespace-nowrap">{form.className}</span>
               </div>
               
